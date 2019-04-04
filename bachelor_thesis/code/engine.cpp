@@ -11,6 +11,8 @@ void run()
 {
 	GLFWwindow* window = createWindow(1280, 720);
 
+	RenderData renderData;
+
 	double timestep = 1.0 / 120.0;
 	double lastTime = glfwGetTime();
 	double deltaTime = 0.0;
@@ -27,7 +29,7 @@ void run()
 		}
 		
 		glClear(GL_COLOR_BUFFER_BIT);
-
+		render(&renderData);
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();

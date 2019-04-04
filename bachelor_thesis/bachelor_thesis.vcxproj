@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\engine.cpp" />
+    <ClCompile Include="code\graphics.cpp" />
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\shader.cpp" />
     <ClCompile Include="code\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\engine.h" />
+    <ClInclude Include="code\graphics.h" />
     <ClInclude Include="code\shader.h" />
     <ClInclude Include="code\texture.h" />
   </ItemGroup>
