@@ -36,8 +36,8 @@ unsigned int createTexture(const char* texturePath)
 	return textureID;
 }
 
-void bindTexture(unsigned int texture, unsigned int index, unsigned int type)
+void bindTexture(unsigned int texture, unsigned int index)
 {
 	glActiveTexture(GL_TEXTURE0 + index);
-	glBindTexture(type, texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
 }
