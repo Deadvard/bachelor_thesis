@@ -8,9 +8,9 @@ struct RenderData
 	unsigned int primaryShader;
 	unsigned int tempTexture;
 
-	unsigned int temp_vao;
-	unsigned int temp_vbo;
-	unsigned int temp_ebo;
+	unsigned int tempVAO;
+	unsigned int tempVBO;
+	unsigned int tempEBO;
 };
 
 void initalize(RenderData* data);
