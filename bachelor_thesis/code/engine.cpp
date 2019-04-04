@@ -1,3 +1,5 @@
+#include "engine.h"
+
 #include <glad.c>
 #include <GLFW/glfw3.h>
 
@@ -6,7 +8,7 @@ GLFWwindow* createWindow()
 	if (glfwInit())
 	{
 		GLFWwindow* window = 
-			glfwCreateWindow(1280, 720, "Hello World", NULL, NULL);
+			glfwCreateWindow(1280, 720, "thesis", 0, 0);
 		
 		if (window)
 		{
