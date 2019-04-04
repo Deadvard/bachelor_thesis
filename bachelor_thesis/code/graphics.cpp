@@ -1,6 +1,7 @@
 #include "graphics.h"
 
 #include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 float vertices[] = {
 	0.5f,  0.5f, 0.0f,
@@ -32,11 +33,14 @@ void initalize(RenderData* data)
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	data->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
 }
 
 void render(const RenderData* data)
 {
 	glUseProgram(data->primaryShader);
+	uniform(data->primaryShader, "projection", data->projection);
 	bindTexture(data->tempTexture, 0);
 	glBindVertexArray(data->tempVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
