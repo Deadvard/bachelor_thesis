@@ -3,6 +3,8 @@
 #include <glad.c>
 #include <GLFW/glfw3.h>
 
+#include "graphics.h"
+
 GLFWwindow* createWindow(int width, int height);
 
 void run()
