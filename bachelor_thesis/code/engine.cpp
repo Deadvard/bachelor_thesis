@@ -7,10 +7,27 @@ GLFWwindow* createWindow(int width, int height);
 
 void run()
 {
+<<<<<<< HEAD
 	GLFWwindow* window = createWindow(1280, 720);
+=======
+	GLFWwindow* window = createWindow();
+
+	double timestep = 1.0 / 120.0;
+	double last_time = glfwGetTime();
+	double delta_time = 0.0;
+>>>>>>> 201b1c211a3a9df705758a4d00dc52a738db412f
 	
 	while (!glfwWindowShouldClose(window))
 	{
+		double now = glfwGetTime();
+		delta_time += now - last_time;
+		last_time = now;
+
+		while (delta_time > timestep)
+		{
+			delta_time -= timestep;
+		}
+		
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glfwSwapBuffers(window);
