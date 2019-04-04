@@ -10,18 +10,18 @@ void run()
 	GLFWwindow* window = createWindow(1280, 720);
 
 	double timestep = 1.0 / 120.0;
-	double last_time = glfwGetTime();
-	double delta_time = 0.0;
+	double lastTime = glfwGetTime();
+	double deltaTime = 0.0;
 	
 	while (!glfwWindowShouldClose(window))
 	{
 		double now = glfwGetTime();
-		delta_time += now - last_time;
-		last_time = now;
+		deltaTime += now - lastTime;
+		lastTime = now;
 
-		while (delta_time > timestep)
+		while (deltaTime > timestep)
 		{
-			delta_time -= timestep;
+			deltaTime -= timestep;
 		}
 		
 		glClear(GL_COLOR_BUFFER_BIT);
