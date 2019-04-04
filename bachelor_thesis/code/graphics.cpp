@@ -37,6 +37,7 @@ void initalize(RenderData* data)
 void render(const RenderData* data)
 {
 	glUseProgram(data->primaryShader);
+	bindTexture(data->tempTexture, 0);
 	glBindVertexArray(data->tempVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
