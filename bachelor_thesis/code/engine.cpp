@@ -3,11 +3,11 @@
 #include <glad.c>
 #include <GLFW/glfw3.h>
 
-GLFWwindow* createWindow();
+GLFWwindow* createWindow(int width, int height);
 
 void run()
 {
-	GLFWwindow* window = createWindow();
+	GLFWwindow* window = createWindow(1280, 720);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -19,7 +19,7 @@ void run()
 	}
 }
 
-GLFWwindow* createWindow()
+GLFWwindow* createWindow(int width, int height)
 {
 	if (glfwInit())
 	{
@@ -28,7 +28,7 @@ GLFWwindow* createWindow()
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		GLFWwindow* window =
-			glfwCreateWindow(1280, 720, "thesis", 0, 0);
+			glfwCreateWindow(width, height, "bachelor_thesis", 0, 0);
 
 		if (window)
 		{
