@@ -11,7 +11,7 @@ void run()
 {
 	GLFWwindow* window = createWindow(1280, 720);
 
-	RenderData renderData;
+	RenderData renderData = {};
 	initalize(&renderData);
 
 	double timestep = 1.0 / 120.0;
