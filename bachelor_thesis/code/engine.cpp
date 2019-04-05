@@ -34,6 +34,7 @@ void run()
 		while (deltaTime > timestep)
 		{
 			deltaTime -= timestep;
+			update(&renderData);
 		}
 		
 		glClear(GL_COLOR_BUFFER_BIT);

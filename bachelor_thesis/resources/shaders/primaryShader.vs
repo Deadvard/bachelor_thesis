@@ -4,8 +4,12 @@ layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 normal;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+
+layout(std140, binding = 0) uniform matrices
+{
+	uniform mat4 view;
+	uniform mat4 projection;
+};
 
 void main()
 {

@@ -15,12 +15,7 @@ struct Meshes
 struct RenderData
 {
 	unsigned int primaryShader;
-	unsigned int tempTexture;
-
-	unsigned int tempVAO;
-	unsigned int tempVBO;
-	unsigned int tempEBO;
-
+	unsigned int uniformBuffer;
 	Meshes meshes;
 
 	glm::mat4 view;
@@ -29,5 +24,6 @@ struct RenderData
 
 void initalize(RenderData* data);
 void render(const RenderData* data);
+void update(RenderData* data);
 
 #endif
