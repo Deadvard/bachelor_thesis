@@ -81,7 +81,7 @@ void run()
 			update(&renderData);
 		}
 		
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		render(&renderData);
 		glfwSwapBuffers(window);
 
@@ -111,6 +111,11 @@ GLFWwindow* createWindow(int width, int height)
 			{
 				return window;
 			}
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 	}
 
