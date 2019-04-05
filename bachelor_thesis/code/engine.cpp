@@ -117,6 +117,23 @@ GLFWwindow* createWindow(int width, int height)
 	return 0;
 }
 
+glm::mat4 cameraView(Camera* camera)
+{
+	double sensetivity = 0.01;
+	glm::quat keyQuat = glm::quat(glm::vec3(
+		camera->cursor.y * sensetivity, 
+		camera->cursor.x * sensetivity, 0.0f));
+
+	camera->rotation = keyQuat * camera->rotation;
+	camera->rotation = glm::normalize(camera->rotation);
+	glm::mat4 rotate = glm::mat4_cast(camera->rotation);
+
+	glm::mat4 translate = glm::mat4(1.0f);
+	translate = glm::translate(translate, -camera->position);
+
+	return rotate * translate;
+}
+
 float cube[] =
 {
 	//pos, uv, normal
