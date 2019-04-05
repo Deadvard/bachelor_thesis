@@ -2,30 +2,74 @@
 
 #include <glad.c>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/quaternion.hpp>
 
 #include "graphics.h"
 
+struct Camera
+{
+	glm::vec3 position;
+	glm::quat rotation;
+
+	glm::dvec2 cursor;
+};
+
 GLFWwindow* createWindow(int width, int height);
+glm::mat4 cameraView(Camera* camera);
 
 void run()
 {
 	GLFWwindow* window = createWindow(1280, 720);
 
+	Camera camera = {};
+	camera.position = glm::vec3(0.0f, 0.0f, 1.0f);
+	
 	RenderData renderData = {};
 	initalize(&renderData);
 
 	double timestep = 1.0 / 120.0;
 	double lastTime = glfwGetTime();
 	double deltaTime = 0.0;
+
+	glm::dvec2 oldMouse = glm::dvec2(0.0, 0.0);
+	glm::dvec2 newMouse = glm::dvec2(0.0, 0.0);
 	
-	while (!glfwWindowShouldClose(window))
+	bool running = true;
+	
+	while (running)
 	{
 		double now = glfwGetTime();
 		deltaTime += now - lastTime;
 		lastTime = now;
 
 		while (deltaTime > timestep)
-		{
+		{				
+			glm::mat4 mat = renderData.view;
+			glm::vec3 forward = glm::vec3(mat[0][2], mat[1][2], mat[2][2]);
+			glm::vec3 right = glm::vec3(mat[0][0], mat[1][0], mat[2][0]);	
+			
+			float speed = 10.0f * timestep;
+			if (glfwGetKey(window, GLFW_KEY_W)) camera.position -= speed * forward;
+			if (glfwGetKey(window, GLFW_KEY_A)) camera.position -= speed * right;
+			if (glfwGetKey(window, GLFW_KEY_S)) camera.position += speed * forward;
+			if (glfwGetKey(window, GLFW_KEY_D)) camera.position += speed * right;
+			
+			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+			{
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				glfwGetCursorPos(window, &newMouse.x, &newMouse.y);
+				camera.cursor.x = newMouse.x - oldMouse.x;
+				camera.cursor.y = newMouse.y - oldMouse.y;
+				oldMouse = newMouse;	
+			}
+			else
+			{
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				glfwGetCursorPos(window, &oldMouse.x, &oldMouse.y);
+				glfwGetCursorPos(window, &newMouse.x, &newMouse.y);
+			}
+
+			renderData.view = cameraView(&camera);				
 			deltaTime -= timestep;
 		}
 		
@@ -34,6 +78,9 @@ void run()
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
+
+		running = !glfwWindowShouldClose(window)
+			&& !glfwGetKey(window, GLFW_KEY_ESCAPE);
 	}
 }
 
@@ -60,4 +107,23 @@ GLFWwindow* createWindow(int width, int height)
 	}
 
 	return 0;
+}
+
+glm::mat4 cameraView(Camera* camera)
+{
+	double sensitivity = 0.01;
+	
+	glm::quat keyQuat = glm::quat(glm::vec3( 
+			camera->cursor.y * sensitivity, 
+			camera->cursor.x * sensitivity, 0));
+
+	camera->rotation = keyQuat * camera->rotation;
+	camera->rotation = glm::normalize(camera->rotation);
+	
+	glm::mat4 rotate = glm::mat4_cast(camera->rotation);
+
+	glm::mat4 translate = glm::mat4(1.0f);
+	translate = glm::translate(translate, -camera->position);
+
+	return rotate * translate;
 }
