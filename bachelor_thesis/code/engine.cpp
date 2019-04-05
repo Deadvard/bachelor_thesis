@@ -74,6 +74,8 @@ void run()
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 				glfwGetCursorPos(window, &oldMouse.x, &oldMouse.y);
 				glfwGetCursorPos(window, &newMouse.x, &newMouse.y);
+				camera.cursor.x = 0.0;
+				camera.cursor.y = 0.0;
 			}
 
 			renderData.view = cameraView(&camera);				
