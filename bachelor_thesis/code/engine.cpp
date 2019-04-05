@@ -128,10 +128,10 @@ GLFWwindow* createWindow(int width, int height)
 
 glm::mat4 cameraView(Camera* camera)
 {
-	double sensetivity = 0.01;
+	double sensitivity = 0.01;
 	glm::quat keyQuat = glm::quat(glm::vec3(
-		camera->cursor.y * sensetivity, 
-		camera->cursor.x * sensetivity, 0.0f));
+		camera->cursor.y * sensitivity,
+		camera->cursor.x * sensitivity, 0.0f));
 
 	camera->rotation = keyQuat * camera->rotation;
 	camera->rotation = glm::normalize(camera->rotation);
