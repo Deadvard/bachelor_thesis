@@ -1,7 +1,7 @@
 #version 430
 layout(location = 0) in vec3 position;
-
-out vec2 uv;
+layout(location = 1) in vec2 uv;
+layout(location = 2) in vec3 normal;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -9,6 +9,5 @@ uniform mat4 projection;
 
 void main()
 {
-	uv = position.xy;
 	gl_Position = projection * view * vec4(position, 1.0);
 }

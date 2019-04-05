@@ -46,4 +46,7 @@ void render(const RenderData* data)
 	bindTexture(data->tempTexture, 0);
 	glBindVertexArray(data->tempVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(data->meshes.vao);
+	glDrawArraysInstanced(GL_TRIANGLES, 0, 36, data->meshes.positions.size());
 }
