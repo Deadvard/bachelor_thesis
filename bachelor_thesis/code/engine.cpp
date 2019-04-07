@@ -7,10 +7,14 @@
 #include "graphics.h"
 #include "voxel_grid.h"
 
+#define pi32 3.14159265359f
+
 struct Camera
 {
 	glm::vec3 position;
-	glm::quat rotation;
+
+	float yaw;
+	float pitch;
 
 	glm::dvec2 cursor;
 };
@@ -128,14 +132,20 @@ GLFWwindow* createWindow(int width, int height)
 
 glm::mat4 cameraView(Camera* camera)
 {
-	double sensitivity = 0.01;
-	glm::quat keyQuat = glm::quat(glm::vec3(
-		camera->cursor.y * sensitivity,
-		camera->cursor.x * sensitivity, 0.0f));
+	float sensitivity = 0.01f;
+	float max = pi32 * 0.4f;
+	float min = -max;
 
-	camera->rotation = keyQuat * camera->rotation;
-	camera->rotation = glm::normalize(camera->rotation);
-	glm::mat4 rotate = glm::mat4_cast(camera->rotation);
+	camera->yaw += camera->cursor.x * sensitivity;
+	camera->pitch += camera->cursor.y * sensitivity;
+	if (camera->pitch < min) camera->pitch = min;
+	if (camera->pitch > max) camera->pitch = max;
+
+	glm::quat qPitch = glm::angleAxis(camera->pitch, glm::vec3(1, 0, 0));
+	glm::quat qYaw = glm::angleAxis(camera->yaw, glm::vec3(0, 1, 0));
+	
+	glm::quat qRotate = glm::normalize(qPitch * qYaw);
+	glm::mat4 rotate = glm::mat4_cast(qRotate);
 
 	glm::mat4 translate = glm::mat4(1.0f);
 	translate = glm::translate(translate, -camera->position);
