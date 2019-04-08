@@ -9,6 +9,7 @@
 struct Points
 {
 	unsigned int vao, vbo;
+	glm::mat4 model;
 };
 
 struct Meshes
