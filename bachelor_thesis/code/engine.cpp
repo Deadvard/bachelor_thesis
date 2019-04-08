@@ -241,15 +241,13 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 
 	glm::vec3 tempPositions[125];
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 125; ++i)
 	{
-		for (int j = 0; j < 5; j++)
-		{
-			for (int k = 0; k < 5; k++)
-			{
-				tempPositions[i * j * k] = glm::vec3(k*10, j*10, i*10);
-			}
-		}
+		int x = i % 5;
+		int y = (i / 5) % 5;
+		int z = i / (5 * 5);
+		
+		tempPositions[i] = glm::vec3(x, y, z);
 	}
 
 	glGenBuffers(1, &renderData->points.vbo);
