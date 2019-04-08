@@ -6,6 +6,11 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+struct Points
+{
+	unsigned int vao, vbo;
+};
+
 struct Meshes
 {
 	std::vector<glm::vec3> positions;
@@ -17,6 +22,7 @@ struct RenderData
 	unsigned int primaryShader;
 	unsigned int uniformBuffer;
 	Meshes meshes;
+	Points points;
 
 	glm::mat4 view;
 	glm::mat4 projection;

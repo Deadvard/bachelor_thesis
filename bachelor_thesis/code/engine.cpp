@@ -22,6 +22,7 @@ struct Camera
 GLFWwindow* createWindow(int width, int height);
 glm::mat4 cameraView(Camera* camera);
 void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData);
+void createPoints(const VoxelData* voxelData);
 
 void run()
 {
@@ -230,4 +231,29 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
 	glVertexAttribDivisor(3, 1);
 
+}
+
+void createPoints(const VoxelData* voxelData, RenderData* renderData)
+{
+	glGenVertexArrays(1, &renderData->points.vao);
+	glBindVertexArray(renderData->points.vao);
+
+	glm::vec3 tempPositions[125];
+
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			for (int k = 0; k < 5; k++)
+			{
+
+			}
+		}
+	}
+
+
+	glGenBuffers(1, &renderData->points.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, renderData->points.vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(voxelData->voxels.densities), &voxelData->voxels.densities[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 }

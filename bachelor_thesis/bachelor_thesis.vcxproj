@@ -33,6 +33,10 @@
     <ClInclude Include="code\texture.h" />
     <ClInclude Include="code\voxel_grid.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\point_shader.fs" />
+    <None Include="resources\shaders\point_shader.vs" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{45A31E75-827E-436F-9B68-E0C1C89D81B2}</ProjectGuid>
