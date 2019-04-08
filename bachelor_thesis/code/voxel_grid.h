@@ -27,4 +27,7 @@ struct VoxelData
 
 void initialize(VoxelData* data);
 
+void sphere(Isosurface* isosurface, float radius);
+
+
 #endif

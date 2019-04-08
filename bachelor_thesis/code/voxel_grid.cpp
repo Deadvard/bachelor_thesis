@@ -15,3 +15,17 @@ void initialize(VoxelData* data)
 		}
 	}
 }
+
+void sphere(Isosurface* isosurface, float radius)
+{
+	for (int i = 0; i < 125; ++i)
+	{
+		int x = i % 5;
+		int y = (i / 5) % 5;
+		int z = i / (5 * 5);
+
+		float sqrDist = x * x + y * y + z * z;
+		float sqrRad = radius * radius;
+		isosurface->densities[i] = sqrDist - sqrRad;
+	}
+}
