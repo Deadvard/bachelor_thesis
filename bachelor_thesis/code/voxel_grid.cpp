@@ -19,6 +19,8 @@ void initialize(VoxelData* data)
 	{
 		voxel = 0.f;
 	}
+
+	sphere(&data->voxels, 2.0f);
 }
 
 void sphere(Isosurface* isosurface, float radius)
