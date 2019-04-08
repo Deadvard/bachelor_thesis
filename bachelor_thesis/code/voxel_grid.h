@@ -23,6 +23,7 @@ struct Voxel
 struct VoxelData
 {
 	std::vector<Voxel> grid;
+	Isosurface voxels;
 };
 
 void initialize(VoxelData* data);

@@ -14,4 +14,9 @@ void initialize(VoxelData* data)
 			z++;
 		}
 	}
+
+	for (auto& voxel : data->voxels.densities)
+	{
+		voxel = 0.f;
+	}
 }
