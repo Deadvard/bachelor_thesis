@@ -22,7 +22,7 @@ struct Camera
 GLFWwindow* createWindow(int width, int height);
 glm::mat4 cameraView(Camera* camera);
 void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData);
-void createPoints(const VoxelData* voxelData);
+void createPoints(const VoxelData* voxelData, RenderData* renderData);
 
 void run()
 {
@@ -38,6 +38,7 @@ void run()
 	initialize(&voxelData);
 
 	voxelsToMeshes(&voxelData, &renderData);
+	createPoints(&voxelData, &renderData);
 
 	double timestep = 1.0 / 120.0;
 	double lastTime = glfwGetTime();
@@ -246,14 +247,13 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		{
 			for (int k = 0; k < 5; k++)
 			{
-
+				tempPositions[i * j * k] = glm::vec3(k*10, j*10, i*10);
 			}
 		}
 	}
 
-
 	glGenBuffers(1, &renderData->points.vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, renderData->points.vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(voxelData->voxels.densities), &voxelData->voxels.densities[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tempPositions), &tempPositions[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 }

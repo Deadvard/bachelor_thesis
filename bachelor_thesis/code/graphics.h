@@ -20,6 +20,7 @@ struct Meshes
 struct RenderData
 {
 	unsigned int primaryShader;
+	unsigned int pointShader;
 	unsigned int uniformBuffer;
 	Meshes meshes;
 	Points points;
