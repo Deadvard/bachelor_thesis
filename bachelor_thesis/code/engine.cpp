@@ -239,7 +239,13 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 	glGenVertexArrays(1, &renderData->points.vao);
 	glBindVertexArray(renderData->points.vao);
 
-	glm::vec3 tempPositions[125];
+	struct posCol
+	{
+		glm::vec3 position;
+		glm::vec3 color;
+	};
+
+	posCol temp[125];
 
 	for (int i = 0; i < 125; ++i)
 	{
@@ -247,11 +253,26 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		int y = (i / 5) % 5;
 		int z = i / (5 * 5);
 		
-		tempPositions[i] = glm::vec3(x, y, z);
+		temp[i].position = glm::vec3(x, y, z);
+
+		if (voxelData->voxels.densities[i] > 0)
+		{
+			temp[i].color = glm::vec3(voxelData->voxels.densities[i], 0.0f, 0.0f);
+		}
+		else
+		{
+			temp[i].color = glm::vec3(0.0f, 0.0f, glm::abs(voxelData->voxels.densities[i]));
+		}
+
+		
 	}
 	glGenBuffers(1, &renderData->points.vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, renderData->points.vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(tempPositions), &tempPositions[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(temp), temp, GL_STATIC_DRAW);
+	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)(sizeof(float) * 3));
+	glEnableVertexAttribArray(1);
 }

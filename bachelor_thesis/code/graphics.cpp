@@ -27,7 +27,6 @@ void render(const RenderData* data)
 	glDrawArraysInstanced(GL_TRIANGLES, 0, 36, (int)data->meshes.positions.size());
 	
 	glUseProgram(data->pointShader);
-	uniform(data->pointShader, "color", glm::vec3(1,0,0));
 	uniform(data->pointShader, "view", data->view);
 	uniform(data->pointShader, "projection", data->projection);
 	glBindVertexArray(data->points.vao);
