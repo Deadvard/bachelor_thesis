@@ -89,6 +89,7 @@ void run()
 			update(&renderData);
 		}
 		
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		render(&renderData);
 		glfwSwapBuffers(window);
@@ -257,11 +258,11 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 
 		if (voxelData->voxels.densities[i] > 0)
 		{
-			temp[i].color = glm::vec3(voxelData->voxels.densities[i], 0.0f, 0.0f);
+			temp[i].color = glm::vec3(voxelData->voxels.densities[i] / 10.0f, 0.0f, 0.0f);
 		}
 		else
 		{
-			temp[i].color = glm::vec3(0.0f, 0.0f, glm::abs(voxelData->voxels.densities[i]));
+			temp[i].color = glm::vec3(0.0f, 0.0f, glm::abs(voxelData->voxels.densities[i]) / 10.0f);
 		}
 
 		

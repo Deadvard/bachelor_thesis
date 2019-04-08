@@ -34,7 +34,7 @@ void render(const RenderData* data)
 	uniform(data->pointShader, "view", data->view);
 	uniform(data->pointShader, "projection", data->projection);
 	glBindVertexArray(data->points.vao);
-	glPointSize(5.0f);
+	glPointSize(25.0f);
 	glDrawArrays(GL_POINTS, 0, 125);
 }
 
