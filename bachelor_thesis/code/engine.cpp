@@ -249,9 +249,9 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		
 		tempPositions[i] = glm::vec3(x, y, z);
 	}
-
 	glGenBuffers(1, &renderData->points.vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, renderData->points.vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(tempPositions), &tempPositions[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+	glEnableVertexAttribArray(0);
 }

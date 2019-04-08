@@ -9,5 +9,5 @@ layout(std140, binding = 0) uniform matrices
 
 void main()
 {
-	gl_Position = gl_Position = projection * view * vec4(position, 1);
+	gl_Position = projection * view * vec4(position, 1);
 }

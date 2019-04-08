@@ -33,7 +33,6 @@ void render(const RenderData* data)
 	glBindVertexArray(data->points.vao);
 	glPointSize(5.0f);
 	glDrawArrays(GL_POINTS, 0, 125);
-	
 }
 
 void update(RenderData* data)
