@@ -3,6 +3,11 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+struct Isosurface
+{
+	float densities[125];
+};
+
 struct Voxel
 {
 	//attributes
