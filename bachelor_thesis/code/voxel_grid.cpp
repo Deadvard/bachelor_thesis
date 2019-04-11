@@ -27,8 +27,8 @@ void initialize(VoxelData* data)
 
 void densityFunction(VoxelData * data)
 {
-	float radius = 4.0f;
-	glm::vec3 pos = glm::vec3(4,4,4);
+	float radius = 2.0f;
+	glm::vec3 pos = glm::vec3(0,0,0);
 
 	for (int i = 0; i < data->NUM_CHUNKS; ++i)
 	{

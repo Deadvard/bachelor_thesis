@@ -16,7 +16,7 @@ struct Voxel
 
 struct VoxelData
 {
-	static const int NUM_CHUNKS = 32;
+	static const int NUM_CHUNKS = 10;
 	Voxel voxelGrid[10 * 10 * 10];
 	Isosurface voxels;
 };
