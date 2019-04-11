@@ -30,6 +30,7 @@
     <ClInclude Include="code\engine.h" />
     <ClInclude Include="code\graphics.h" />
     <ClInclude Include="code\shader.h" />
+    <ClInclude Include="code\tables.h" />
     <ClInclude Include="code\texture.h" />
     <ClInclude Include="code\voxel_grid.h" />
   </ItemGroup>

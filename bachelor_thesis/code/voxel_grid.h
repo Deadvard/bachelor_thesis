@@ -3,28 +3,19 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-struct Isosurface
-{
-	float densities[125];
-};
-
 struct Voxel
 {
-	int id;
-	float densities[8];
+	static const int NUM_CORNERS = 8;
+	float densities[NUM_CORNERS];
 };
 
 struct VoxelData
 {
-	static const int NUM_CHUNKS = 10;
+	static const int WIDTH = 10;
 	Voxel voxelGrid[10 * 10 * 10];
-	Isosurface voxels;
 };
 
 void initialize(VoxelData* data);
-
 void densityFunction(VoxelData* data);
-void sphere(Isosurface* isosurface, float radius);
-
 
 #endif

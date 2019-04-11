@@ -6,12 +6,6 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-struct Points
-{
-	unsigned int vao, vbo;
-	glm::mat4 model;
-};
-
 struct MarchingCubes
 {
 	unsigned int vao, vbo;
@@ -21,9 +15,7 @@ struct MarchingCubes
 struct RenderData
 {
 	unsigned int primaryShader;
-	unsigned int pointShader;
 	unsigned int uniformBuffer;
-	Points points;
 	MarchingCubes marchingCubes;
 
 	glm::mat4 view;

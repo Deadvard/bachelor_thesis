@@ -50,6 +50,9 @@
     <ClInclude Include="code\voxel_grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="code\tables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\point_shader.vs" />
