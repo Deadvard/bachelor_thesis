@@ -61,7 +61,7 @@ void run()
 			glm::vec3 forward = glm::vec3(mat[0][2], mat[1][2], mat[2][2]);
 			glm::vec3 right = glm::vec3(mat[0][0], mat[1][0], mat[2][0]);	
 			
-			float speed = 10.0f * timestep;
+			float speed = 10.0f * (float)timestep;
 			if (glfwGetKey(window, GLFW_KEY_W)) camera.position -= speed * forward;
 			if (glfwGetKey(window, GLFW_KEY_A)) camera.position -= speed * right;
 			if (glfwGetKey(window, GLFW_KEY_S)) camera.position += speed * forward;
@@ -139,8 +139,8 @@ glm::mat4 cameraView(Camera* camera)
 	float max = pi32 * 0.4f;
 	float min = -max;
 
-	camera->yaw += camera->cursor.x * sensitivity;
-	camera->pitch += camera->cursor.y * sensitivity;
+	camera->yaw += (float)camera->cursor.x * sensitivity;
+	camera->pitch += (float)camera->cursor.y * sensitivity;
 	if (camera->pitch < min) camera->pitch = min;
 	if (camera->pitch > max) camera->pitch = max;
 
