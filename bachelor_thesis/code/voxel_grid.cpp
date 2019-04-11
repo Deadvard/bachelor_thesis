@@ -16,7 +16,7 @@ void densityFunction(VoxelData * data)
 		int y = (i / data->WIDTH) % data->WIDTH;
 		int z = i / (data->WIDTH * data->WIDTH);
 
-		glm::vec3 positions[8];
+		glm::vec3 positions[data->voxelGrid[i].NUM_CORNERS];
 		positions[0] = glm::vec3(x, y, z);
 		positions[1] = glm::vec3(x + 1, y, z);
 		positions[2] = glm::vec3(x + 1, y, z + 1);
@@ -27,13 +27,11 @@ void densityFunction(VoxelData * data)
 		positions[6] = glm::vec3(x + 1, y + 1, z + 1);
 		positions[7] = glm::vec3(x, y + 1, z + 1);
 
-		float rad = std::sqrt(radius * radius);
-
-		for (int j = 0; j < 8; j++)
+		for (int j = 0; j < data->voxelGrid[i].NUM_CORNERS; ++j)
 		{
 			glm::vec3 newPos = pos - positions[j];
 			float dist = std::sqrt(newPos.x * newPos.x * newPos.y * newPos.y * newPos.z * newPos.z);
-			data->voxelGrid[i].densities[j] = rad - dist;
+			data->voxelGrid[i].densities[j] = radius - dist;
 		}
 	}
 }
