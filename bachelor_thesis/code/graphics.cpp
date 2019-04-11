@@ -7,6 +7,7 @@
 void initalize(RenderData* data)
 {
 	data->primaryShader = createShader("resources/shaders/primary_shader.vs", "resources/shaders/primary_shader.fs");
+	data->pointShader = createShader("resources/shaders/point_shader.vs", "resources/shaders/point_shader.fs");
 
 	data->view = glm::lookAt(glm::vec3(0,0,1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	data->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
@@ -24,6 +25,14 @@ void render(const RenderData* data)
 	uniform(data->primaryShader, "projection", data->projection);
 	glBindVertexArray(data->marchingCubes.vao);
 	glDrawArrays(GL_TRIANGLES, 0, data->marchingCubes.numTriangles * 3);
+
+	glUseProgram(data->pointShader);
+	uniform(data->pointShader, "model", glm::mat4(1.f));
+	uniform(data->pointShader, "view", data->view);
+	uniform(data->pointShader, "projection", data->projection);
+	glBindVertexArray(data->marchingCubes.pt_vao);
+	glPointSize(5.f);
+	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
 }
 
 void update(RenderData* data)

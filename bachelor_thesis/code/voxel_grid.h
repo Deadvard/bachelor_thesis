@@ -12,7 +12,7 @@ struct Voxel
 struct VoxelData
 {
 	static const int WIDTH = 10;
-	Voxel voxelGrid[10 * 10 * 10];
+	Voxel voxelGrid[WIDTH * WIDTH * WIDTH];
 };
 
 void initialize(VoxelData* data);

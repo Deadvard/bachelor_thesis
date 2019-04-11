@@ -10,11 +10,15 @@ struct MarchingCubes
 {
 	unsigned int vao, vbo;
 	unsigned int numTriangles;
+
+	unsigned int pt_vao, pt_vbo;
+	unsigned int numPoints;
 };
 
 struct RenderData
 {
 	unsigned int primaryShader;
+	unsigned int pointShader;
 	unsigned int uniformBuffer;
 	MarchingCubes marchingCubes;
 

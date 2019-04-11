@@ -7,8 +7,8 @@ void initialize(VoxelData* data)
 
 void densityFunction(VoxelData * data)
 {
-	float radius = 2.0f;
-	glm::vec3 pos = glm::vec3(5,0,0);
+	float radius = 0.1f;
+	glm::vec3 pos = glm::vec3(5,5,5);
 
 	for (int i = 0; i < data->WIDTH * data->WIDTH * data->WIDTH; ++i)
 	{
@@ -33,7 +33,7 @@ void densityFunction(VoxelData * data)
 		{
 			glm::vec3 newPos = pos - positions[j];
 			float dist = std::sqrt(newPos.x * newPos.x * newPos.y * newPos.y * newPos.z * newPos.z);
-			data->voxelGrid[i].densities[j] = dist - rad;
+			data->voxelGrid[i].densities[j] = rad - dist;
 		}
 	}
 }

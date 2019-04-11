@@ -39,6 +39,7 @@ void run()
 	initialize(&voxelData);
 
 	voxelsToMeshes(&voxelData, &renderData);
+	createPoints(&voxelData, &renderData);
 
 	double timestep = 1.0 / 120.0;
 	double lastTime = glfwGetTime();
@@ -174,6 +175,63 @@ glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, float v1, floa
 	p.y = p1.y + (float)mu * (p2.y - p1.y);
 	p.z = p1.z + (float)mu * (p2.z - p1.z);
 	return p;
+}
+
+void createPoints(const VoxelData* voxelData, RenderData* renderData)
+{
+	struct PosCol
+	{
+		glm::vec3 position;
+		glm::vec3 color;
+	};
+
+	std::vector<PosCol> points;
+	for (int i = 0; i < voxelData->WIDTH * voxelData->WIDTH * voxelData->WIDTH; ++i)
+	{
+		int x = i % voxelData->WIDTH;
+		int y = (i / voxelData->WIDTH) % voxelData->WIDTH;
+		int z = i / (voxelData->WIDTH * voxelData->WIDTH);
+
+		PosCol temp[8];
+
+		temp[0].position = glm::vec3(x, y, z);
+		temp[1].position = glm::vec3(x + 1, y, z);
+		temp[2].position = glm::vec3(x + 1, y, z + 1);
+		temp[3].position = glm::vec3(x, y, z + 1);
+
+		temp[0].color = glm::vec3(std::abs(voxelData->voxelGrid[i].densities[0]));
+		temp[1].color = glm::vec3(std::abs(voxelData->voxelGrid[i].densities[1]));
+		temp[2].color = glm::vec3(std::abs(voxelData->voxelGrid[i].densities[2]));
+		temp[3].color = glm::vec3(std::abs(voxelData->voxelGrid[i].densities[3]));
+
+		temp[4].position = glm::vec3(x, y + 1, z);
+		temp[5].position = glm::vec3(x + 1, y + 1, z);
+		temp[6].position = glm::vec3(x + 1, y + 1, z + 1);
+		temp[7].position = glm::vec3(x, y + 1, z + 1);
+
+		temp[4].color = glm::vec3(1,0,0);
+		temp[5].color = glm::vec3(1,0,0);
+		temp[6].color = glm::vec3(1,0,0);
+		temp[7].color = glm::vec3(1,0,0);
+
+		for(int j = 0; j < 8; ++j)
+			points.emplace_back(temp[j]);
+	}
+
+	renderData->marchingCubes.numPoints = points.size();
+
+	glGenVertexArrays(1, &renderData->marchingCubes.pt_vao);
+	glBindVertexArray(renderData->marchingCubes.pt_vao);
+	glGenBuffers(1, &renderData->marchingCubes.pt_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, renderData->marchingCubes.pt_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(PosCol) * points.size(), &points[0], GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)(sizeof(float) * 3));
+	glEnableVertexAttribArray(1);
+
 }
 
 void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
