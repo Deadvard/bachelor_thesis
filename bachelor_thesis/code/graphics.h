@@ -12,10 +12,10 @@ struct Points
 	glm::mat4 model;
 };
 
-struct Meshes
+struct MarchingCubes
 {
-	std::vector<glm::vec3> positions;
-	unsigned int vao, vbo, instanceVbo;
+	unsigned int vao, vbo;
+	unsigned int numTriangles;
 };
 
 struct RenderData
@@ -23,8 +23,8 @@ struct RenderData
 	unsigned int primaryShader;
 	unsigned int pointShader;
 	unsigned int uniformBuffer;
-	Meshes meshes;
 	Points points;
+	MarchingCubes marchingCubes;
 
 	glm::mat4 view;
 	glm::mat4 projection;

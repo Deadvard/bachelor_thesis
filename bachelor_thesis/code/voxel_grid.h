@@ -10,24 +10,20 @@ struct Isosurface
 
 struct Voxel
 {
-	//attributes
-	bool isEmpty;
-	bool hasMaterial;
-	bool hasUV;
-
-	glm::vec3 position;
-
-	//more stuff here
+	int id;
+	float densities[8];
 };
 
 struct VoxelData
 {
-	std::vector<Voxel> grid;
+	static const int NUM_CHUNKS = 32;
+	Voxel voxelGrid[10 * 10 * 10];
 	Isosurface voxels;
 };
 
 void initialize(VoxelData* data);
 
+void densityFunction(VoxelData* data);
 void sphere(Isosurface* isosurface, float radius);
 
 
