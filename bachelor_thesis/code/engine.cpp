@@ -523,17 +523,17 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 
 	std::vector<Triangle> triangles;
 
-	for (int i = 0; i < voxelData->NUM_CHUNKS; ++i)
+	for (int i = 0; i < 10 * 10 * 10; ++i)
 	{
 		unsigned char marchingCubesCase =
-			(voxelData->voxelGrid[i].densities[7] >= 0.0f) << 7 |
-			(voxelData->voxelGrid[i].densities[6] >= 0.0f) << 6 |
-			(voxelData->voxelGrid[i].densities[5] >= 0.0f) << 5 |
-			(voxelData->voxelGrid[i].densities[4] >= 0.0f) << 4 |
-			(voxelData->voxelGrid[i].densities[3] >= 0.0f) << 3 |
-			(voxelData->voxelGrid[i].densities[2] >= 0.0f) << 2 |
-			(voxelData->voxelGrid[i].densities[1] >= 0.0f) << 1 |
-			(voxelData->voxelGrid[i].densities[0] >= 0.0f) << 0;
+			(voxelData->voxelGrid[i].densities[7] < 0.0f) << 7 |
+			(voxelData->voxelGrid[i].densities[6] < 0.0f) << 6 |
+			(voxelData->voxelGrid[i].densities[5] < 0.0f) << 5 |
+			(voxelData->voxelGrid[i].densities[4] < 0.0f) << 4 |
+			(voxelData->voxelGrid[i].densities[3] < 0.0f) << 3 |
+			(voxelData->voxelGrid[i].densities[2] < 0.0f) << 2 |
+			(voxelData->voxelGrid[i].densities[1] < 0.0f) << 1 |
+			(voxelData->voxelGrid[i].densities[0] < 0.0f) << 0;
 
 		//if(marchingCubesCase == 0 || marchingCubesCase == 255)
 
