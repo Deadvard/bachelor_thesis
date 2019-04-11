@@ -28,7 +28,7 @@ void render(const RenderData* data)
 	uniform(data->pointShader, "view", data->view);
 	uniform(data->pointShader, "projection", data->projection);
 	glBindVertexArray(data->marchingCubes.vao);
-	glDrawArrays(GL_TRIANGLES, 0, data->marchingCubes.numTriangles);
+	glDrawArrays(GL_TRIANGLES, 0, data->marchingCubes.numTriangles * 3);
 
 	glUseProgram(data->pointShader);
 	uniform(data->pointShader, "model", data->points.model);
