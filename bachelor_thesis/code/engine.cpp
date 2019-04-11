@@ -598,7 +598,7 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 		glBindVertexArray(renderData->marchingCubes.vao);
 		glGenBuffers(1, &renderData->marchingCubes.vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, renderData->marchingCubes.vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(triangles), &triangles[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * triangles.size(), &triangles[0], GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 		glEnableVertexAttribArray(0);
 		renderData->marchingCubes.numTriangles = triangles.size();

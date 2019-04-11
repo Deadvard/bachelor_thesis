@@ -27,7 +27,7 @@ void initialize(VoxelData* data)
 
 void densityFunction(VoxelData * data)
 {
-	float radius = 2.0f;
+	float radius = 4.0f;
 	glm::vec3 pos = glm::vec3(4,4,4);
 
 	for (int i = 0; i < data->NUM_CHUNKS; ++i)
@@ -47,13 +47,13 @@ void densityFunction(VoxelData * data)
 		positions[6] = glm::vec3(x + 1, y + 1, z + 1);
 		positions[7] = glm::vec3(x, y + 1, z + 1);
 
-		float sqrRad = radius * radius;
+		float rad = std::sqrt(radius * radius);
 
 		for (int j = 0; j < 8; j++)
 		{
 			glm::vec3 newPos = pos - positions[j];
-			float sqrDist = newPos.x * newPos.x * newPos.y * newPos.y * newPos.z * newPos.z;
-			data->voxelGrid[i].densities[j] = sqrRad - sqrDist;
+			float dist = std::sqrt(newPos.x * newPos.x * newPos.y * newPos.y * newPos.z * newPos.z);
+			data->voxelGrid[i].densities[j] = dist - rad;
 		}
 	}
 }
