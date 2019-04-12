@@ -254,7 +254,7 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 			(voxelData->voxelGrid[i].densities[2] < 0.0f) << 2 |
 			(voxelData->voxelGrid[i].densities[1] < 0.0f) << 1 |
 			(voxelData->voxelGrid[i].densities[0] < 0.0f) << 0;
-
+			
 		if (marchingCubesCase != 0 && marchingCubesCase != 255)
 		{
 			int x = i % voxelData->WIDTH;
