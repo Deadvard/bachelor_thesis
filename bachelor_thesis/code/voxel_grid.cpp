@@ -29,21 +29,26 @@ void densityFunction(VoxelData * data)
 		positions[6] = glm::vec3(x + 1, y + 1, z + 1);
 		positions[7] = glm::vec3(x, y + 1, z + 1);
 
-		int indices[8];
-		indices[0] = 0 + i;
-		indices[1] = 1 + i;
-		indices[2] = 1 + i + data->size.x * data->size.y;
-		indices[3] = 0 + i + data->size.x * data->size.y;
-		indices[4] = 0 + i + data->size.x;
-		indices[5] = 1 + i + data->size.x;
-		indices[6] = 1 + i + data->size.x + data->size.x * data->size.y;
-		indices[7] = 0 + i + data->size.x + data->size.x * data->size.y;
+		glm::ivec3 size = data->size;
 
-		for (int j = 0; j < data->voxelGrid[i].NUM_CORNERS; ++j)
+		if (x != size.x && y != size.y && z != size.z)
 		{
-			glm::vec3 newPos = pos - positions[j];
-			float dist = std::sqrt(newPos.x * newPos.x + newPos.y * newPos.y + newPos.z * newPos.z);
-			data->isosurface.distances[indices[j]] = radius - dist;
+			int indices[8];
+			indices[0] = 0 + i;
+			indices[1] = 1 + i;
+			indices[2] = 1 + i + size.x * size.y;
+			indices[3] = 0 + i + size.x * size.y;
+			indices[4] = 0 + i + size.x;
+			indices[5] = 1 + i + size.x;
+			indices[6] = 1 + i + size.x + size.x * size.y;
+			indices[7] = 0 + i + size.x + size.x * size.y;
+
+			for (int j = 0; j < data->voxelGrid[i].NUM_CORNERS; ++j)
+			{
+				glm::vec3 newPos = pos - positions[j];
+				float dist = std::sqrt(newPos.x * newPos.x + newPos.y * newPos.y + newPos.z * newPos.z);
+				data->isosurface.distances[indices[j]] = radius - dist;
+			}
 		}
 	}
 }
