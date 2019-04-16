@@ -245,22 +245,35 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 
 	for (int i = 0; i < voxelData->WIDTH * voxelData->WIDTH * voxelData->WIDTH; ++i)
 	{
+		int x = i % voxelData->WIDTH;
+		int y = (i / voxelData->WIDTH) % voxelData->WIDTH;
+		int z = i / (voxelData->WIDTH * voxelData->WIDTH);
+
+		const float* distances = voxelData->isosurface.distances;
+
+		glm::ivec3 size = voxelData->size;
+		int indices[8];
+		indices[0] = 0 + i;
+		indices[1] = 1 + i;
+		indices[2] = 1 + i + size.x * size.y;
+		indices[3] = 0 + i + size.x * size.y;
+		indices[4] = 0 + i + size.x;
+		indices[5] = 1 + i + size.x;
+		indices[6] = 1 + i + size.x + size.x * size.y;
+		indices[7] = 0 + i + size.x + size.x * size.y;
+		
 		unsigned int marchingCubesCase =
-			(voxelData->voxelGrid[i].densities[7] < 0.0f) << 7 |
-			(voxelData->voxelGrid[i].densities[6] < 0.0f) << 6 |
-			(voxelData->voxelGrid[i].densities[5] < 0.0f) << 5 |
-			(voxelData->voxelGrid[i].densities[4] < 0.0f) << 4 |
-			(voxelData->voxelGrid[i].densities[3] < 0.0f) << 3 |
-			(voxelData->voxelGrid[i].densities[2] < 0.0f) << 2 |
-			(voxelData->voxelGrid[i].densities[1] < 0.0f) << 1 |
-			(voxelData->voxelGrid[i].densities[0] < 0.0f) << 0;
+			(distances[indices[7]] < 0.0f) << 7 |
+			(distances[indices[6]] < 0.0f) << 6 |
+			(distances[indices[5]] < 0.0f) << 5 |
+			(distances[indices[4]] < 0.0f) << 4 |
+			(distances[indices[3]] < 0.0f) << 3 |
+			(distances[indices[2]] < 0.0f) << 2 |
+			(distances[indices[1]] < 0.0f) << 1 |
+			(distances[indices[0]] < 0.0f) << 0;
 			
 		if (marchingCubesCase != 0 && marchingCubesCase != 255)
 		{
-			int x = i % voxelData->WIDTH;
-			int y = (i / voxelData->WIDTH) % voxelData->WIDTH;
-			int z = i / (voxelData->WIDTH * voxelData->WIDTH);
-
 			glm::vec3 positions[voxelData->voxelGrid[i].NUM_CORNERS];
 
 			positions[0] = glm::vec3(x, y, z);
@@ -276,29 +289,29 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 			glm::vec3 vertices[12];
 
 			if (edgeTable[marchingCubesCase] & 1)
-				vertices[0] = interpolation(positions[0], positions[1], voxelData->voxelGrid[i].densities[0], voxelData->voxelGrid[i].densities[1]);
+				vertices[0] = interpolation(positions[0], positions[1], distances[indices[0]], distances[indices[1]]);
 			if (edgeTable[marchingCubesCase] & 2)
-				vertices[1] = interpolation(positions[1], positions[2], voxelData->voxelGrid[i].densities[1], voxelData->voxelGrid[i].densities[2]);
+				vertices[1] = interpolation(positions[1], positions[2], distances[indices[1]], distances[indices[2]]);
 			if (edgeTable[marchingCubesCase] & 4)
-				vertices[2] = interpolation(positions[2], positions[3], voxelData->voxelGrid[i].densities[2], voxelData->voxelGrid[i].densities[3]);
+				vertices[2] = interpolation(positions[2], positions[3], distances[indices[2]], distances[indices[3]]);
 			if (edgeTable[marchingCubesCase] & 8)
-				vertices[3] = interpolation(positions[3], positions[0], voxelData->voxelGrid[i].densities[3], voxelData->voxelGrid[i].densities[0]);
+				vertices[3] = interpolation(positions[3], positions[0], distances[indices[3]], distances[indices[0]]);
 			if (edgeTable[marchingCubesCase] & 16)
-				vertices[4] = interpolation(positions[4], positions[5], voxelData->voxelGrid[i].densities[4], voxelData->voxelGrid[i].densities[5]);
+				vertices[4] = interpolation(positions[4], positions[5], distances[indices[4]], distances[indices[5]]);
 			if (edgeTable[marchingCubesCase] & 32)
-				vertices[5] = interpolation(positions[5], positions[6], voxelData->voxelGrid[i].densities[5], voxelData->voxelGrid[i].densities[6]);
+				vertices[5] = interpolation(positions[5], positions[6], distances[indices[5]], distances[indices[6]]);
 			if (edgeTable[marchingCubesCase] & 64)
-				vertices[6] = interpolation(positions[6], positions[7], voxelData->voxelGrid[i].densities[6], voxelData->voxelGrid[i].densities[7]);
+				vertices[6] = interpolation(positions[6], positions[7], distances[indices[6]], distances[indices[7]]);
 			if (edgeTable[marchingCubesCase] & 128)
-				vertices[7] = interpolation(positions[7], positions[4], voxelData->voxelGrid[i].densities[7], voxelData->voxelGrid[i].densities[4]);
+				vertices[7] = interpolation(positions[7], positions[4], distances[indices[7]], distances[indices[4]]);
 			if (edgeTable[marchingCubesCase] & 256)
-				vertices[8] = interpolation(positions[0], positions[4], voxelData->voxelGrid[i].densities[0], voxelData->voxelGrid[i].densities[4]);
+				vertices[8] = interpolation(positions[0], positions[4], distances[indices[0]], distances[indices[4]]);
 			if (edgeTable[marchingCubesCase] & 512)
-				vertices[9] = interpolation(positions[1], positions[5], voxelData->voxelGrid[i].densities[1], voxelData->voxelGrid[i].densities[5]);
+				vertices[9] = interpolation(positions[1], positions[5], distances[indices[1]], distances[indices[5]]);
 			if (edgeTable[marchingCubesCase] & 1024)
-				vertices[10] = interpolation(positions[2], positions[6], voxelData->voxelGrid[i].densities[2], voxelData->voxelGrid[i].densities[6]);
+				vertices[10] = interpolation(positions[2], positions[6], distances[indices[2]], distances[indices[6]]);
 			if (edgeTable[marchingCubesCase] & 2048)
-				vertices[11] = interpolation(positions[3], positions[7], voxelData->voxelGrid[i].densities[3], voxelData->voxelGrid[i].densities[7]);
+				vertices[11] = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
 
 			for (int j = 0; triTable[marchingCubesCase][j] != -1; j += 3)
 			{

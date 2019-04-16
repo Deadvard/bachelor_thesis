@@ -3,6 +3,16 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+struct Isosurface
+{
+	float distances[1000];
+};
+
+struct Cube
+{
+	float distances[8];
+};
+
 struct Voxel
 {
 	static const int NUM_CORNERS = 8;
@@ -13,6 +23,10 @@ struct VoxelData
 {
 	static const int WIDTH = 10;
 	Voxel voxelGrid[WIDTH * WIDTH * WIDTH];
+
+	glm::ivec3 size;
+
+	Isosurface isosurface;
 };
 
 void initialize(VoxelData* data);
