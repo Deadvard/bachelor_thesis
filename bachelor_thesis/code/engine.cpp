@@ -39,7 +39,7 @@ void run()
 	initialize(&voxelData);
 
 	voxelsToMeshes(&voxelData, &renderData);
-	//createPoints(&voxelData, &renderData);
+	createPoints(&voxelData, &renderData);
 
 	double timestep = 1.0 / 120.0;
 	double lastTime = glfwGetTime();
@@ -185,6 +185,9 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		glm::vec3 color;
 	};
 
+	glm::ivec3 size = voxelData->size;
+	const float* distances = voxelData->isosurface.distances;
+
 	std::vector<PosCol> points;
 	for (int i = 0; i < voxelData->WIDTH * voxelData->WIDTH * voxelData->WIDTH; ++i)
 	{
@@ -193,16 +196,21 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		int z = i / (voxelData->WIDTH * voxelData->WIDTH);
 
 		PosCol temp[8];
-
 		temp[0].position = glm::vec3(x, y, z);
 		temp[1].position = glm::vec3(x + 1, y, z);
 		temp[2].position = glm::vec3(x + 1, y, z + 1);
 		temp[3].position = glm::vec3(x, y, z + 1);
 
-		temp[0].color = glm::vec3(std::abs(voxelData->voxelGrid[i].densities[0]));
-		temp[1].color = glm::vec3(std::abs(voxelData->voxelGrid[i].densities[1]));
-		temp[2].color = glm::vec3(std::abs(voxelData->voxelGrid[i].densities[2]));
-		temp[3].color = glm::vec3(std::abs(voxelData->voxelGrid[i].densities[3]));
+		int indices[4];
+		indices[0] = 0 + i;
+		indices[1] = 1 + i;
+		indices[2] = 1 + i + size.x * size.y;
+		indices[3] = 0 + i + size.x * size.y;
+
+		temp[0].color = glm::vec3(std::abs(distances[indices[0]]));
+		temp[1].color = glm::vec3(std::abs(distances[indices[1]]));
+		temp[2].color = glm::vec3(std::abs(distances[indices[2]]));
+		temp[3].color = glm::vec3(std::abs(distances[indices[3]]));
 
 		temp[4].position = glm::vec3(x, y + 1, z);
 		temp[5].position = glm::vec3(x + 1, y + 1, z);
