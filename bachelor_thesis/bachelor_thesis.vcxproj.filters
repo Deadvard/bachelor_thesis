@@ -57,5 +57,6 @@
   <ItemGroup>
     <None Include="resources\shaders\point_shader.vs" />
     <None Include="resources\shaders\point_shader.fs" />
+    <None Include="resources\shaders\compute_shader.comp" />
   </ItemGroup>
 </Project>
