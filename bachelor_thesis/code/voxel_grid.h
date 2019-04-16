@@ -8,11 +8,6 @@ struct Isosurface
 	float distances[1000];
 };
 
-struct Cube
-{
-	float distances[8];
-};
-
 struct Voxel
 {
 	static const int NUM_CORNERS = 8;

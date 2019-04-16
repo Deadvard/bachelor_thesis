@@ -242,18 +242,16 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 	};
 
 	std::vector<Triangle> triangles;
-
-	for (int i = 0; i < voxelData->WIDTH * voxelData->WIDTH * voxelData->WIDTH; ++i)
+	glm::ivec3 size = voxelData->size;
+	const float* distances = voxelData->isosurface.distances;
+	
+	for (int i = 0; i < size.x * size.y * size.z; ++i)
 	{
-		int x = i % voxelData->WIDTH;
-		int y = (i / voxelData->WIDTH) % voxelData->WIDTH;
-		int z = i / (voxelData->WIDTH * voxelData->WIDTH);
+		int x = i % size.x;
+		int y = (i / size.x) % size.y;
+		int z = i / (size.x * size.y);
 
-		const float* distances = voxelData->isosurface.distances;
-
-		glm::ivec3 size = voxelData->size;
-
-		if (x != size.x && y != size.y && z != size.z)
+		if (x < size.x - 1 && y < size.y - 1 && z < size.z - 1)
 		{
 			int indices[8];
 			indices[0] = 0 + i;
