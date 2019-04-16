@@ -13,6 +13,8 @@ struct MarchingCubes
 
 	unsigned int pt_vao, pt_vbo;
 	unsigned int numPoints;
+
+	unsigned int computeShader;
 };
 
 struct RenderData

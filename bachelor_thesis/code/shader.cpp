@@ -64,6 +64,45 @@ unsigned int createShader(const char* vertexPath, const char* fragmentPath)
 	return shader;
 }
 
+unsigned int createShader(const char* computePath)
+{
+	// 1. retrieve the vertex/fragment source code from filePath
+	std::string computeCode;
+	std::ifstream cShaderFile;
+
+	// open files
+	cShaderFile.open(computePath);
+	std::stringstream cShaderStream;
+
+	// read file's buffer contents into streams
+	cShaderStream << cShaderFile.rdbuf();
+
+	// close file handlers
+	cShaderFile.close();
+
+	// convert stream into string
+	computeCode = cShaderStream.str();
+
+	const char* cShaderCode = computeCode.c_str();
+
+	// vertex shader
+	unsigned int compute = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(compute, 1, &cShaderCode, NULL);
+	glCompileShader(compute);
+	checkCompileErrors(compute, "COMPUTE");
+
+	// shader Program
+	unsigned int shader = glCreateProgram();
+	glAttachShader(shader, compute);
+	glLinkProgram(shader);
+	checkCompileErrors(shader, "PROGRAM");
+
+	// delete the shaders as they're linked into our program now and no longer necessary
+	glDeleteShader(compute);
+
+	return shader;
+}
+
 void uniform(unsigned int shader, const char* name, bool value)
 {
 	glUniform1i(glGetUniformLocation(shader, name), (int)value);

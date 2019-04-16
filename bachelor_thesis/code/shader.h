@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 unsigned int createShader(const char* vertexPath, const char* fragmentPath);
+unsigned int createShader(const char* computePath);
 
 void uniform(unsigned int shader, const char* name, bool value);
 void uniform(unsigned int shader, const char* name, int value);
