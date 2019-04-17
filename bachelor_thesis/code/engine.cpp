@@ -40,8 +40,8 @@ void run()
 	VoxelData voxelData = {};
 	initialize(&voxelData);
 
-	//tetraVoxelsToMeshes(&voxelData, &renderData);
-	voxelsToMeshes(&voxelData, &renderData);
+	tetraVoxelsToMeshes(&voxelData, &renderData);
+	//voxelsToMeshes(&voxelData, &renderData);
 	createPoints(&voxelData, &renderData);
 
 	double timestep = 1.0 / 120.0;
@@ -374,7 +374,8 @@ void polygoniseTri(Gridcell g, std::vector<Triangle>& tri, int v0, int v1, int v
 		(g.distance[v2] < 0.0f) << 2 |
 		(g.distance[v3] < 0.0f) << 3;
 
-	Triangle triangle;
+	Triangle tri1;
+	Triangle tri2;
 	/* Form the vertices of the triangles for each case */
 	switch (triindex) {
 	case 0x00:
@@ -382,67 +383,67 @@ void polygoniseTri(Gridcell g, std::vector<Triangle>& tri, int v0, int v1, int v
 		break;
 	case 0x0E:
 	case 0x01:
-		triangle.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
-		triangle.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
-		triangle.p[2] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
-		tri.emplace_back(triangle);
+		tri1.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
+		tri1.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
+		tri1.p[2] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
+		tri.emplace_back(tri1);
 		break;
 	case 0x0D:
 	case 0x02:
-		triangle.p[0] = interpolation(g.p[v1], g.p[v0], g.distance[v1], g.distance[v0]);
-		triangle.p[1] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
-		triangle.p[2] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
-		tri.emplace_back(triangle);
+		tri1.p[0] = interpolation(g.p[v1], g.p[v0], g.distance[v1], g.distance[v0]);
+		tri1.p[1] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
+		tri1.p[2] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
+		tri.emplace_back(tri1);
 		break;
 	case 0x0C:
 	case 0x03:
-		triangle.p[0] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
-		triangle.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
-		triangle.p[2] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
-		tri.emplace_back(triangle);
+		tri1.p[0] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
+		tri1.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
+		tri1.p[2] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
+		tri.emplace_back(tri1);
 
-		triangle.p[0] = tri[0].p[2];
-		triangle.p[1] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
-		triangle.p[2] = tri[0].p[1];
-		tri.emplace_back(triangle);
+		tri2.p[0] = tri1.p[2];
+		tri2.p[1] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
+		tri2.p[2] = tri1.p[1];
+		tri.emplace_back(tri2);
 		break;
 	case 0x0B:
 	case 0x04:
-		triangle.p[0] = interpolation(g.p[v2], g.p[v0], g.distance[v2], g.distance[v0]);
-		triangle.p[1] = interpolation(g.p[v2], g.p[v1], g.distance[v2], g.distance[v1]);
-		triangle.p[2] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
-		tri.emplace_back(triangle);
+		tri1.p[0] = interpolation(g.p[v2], g.p[v0], g.distance[v2], g.distance[v0]);
+		tri1.p[1] = interpolation(g.p[v2], g.p[v1], g.distance[v2], g.distance[v1]);
+		tri1.p[2] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
+		tri.emplace_back(tri1);
 		break;
 	case 0x0A:
 	case 0x05:
-		triangle.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
-		triangle.p[1] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
-		triangle.p[2] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
-		tri.emplace_back(triangle);
+		tri1.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
+		tri1.p[1] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
+		tri1.p[2] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
+		tri.emplace_back(tri1);
 
-		triangle.p[0] = tri[0].p[0];
-		triangle.p[1] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
-		triangle.p[2] = tri[0].p[1];
-		tri.emplace_back(triangle);
+		tri2.p[0] = tri1.p[0];
+		tri2.p[1] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
+		tri2.p[2] = tri1.p[1];
+		tri.emplace_back(tri2);
 		break;
 	case 0x09:
 	case 0x06:
-		triangle.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
-		triangle.p[1] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
-		triangle.p[2] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
-		tri.emplace_back(triangle);
+		tri1.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
+		tri1.p[1] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
+		tri1.p[2] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
+		tri.emplace_back(tri1);
 
-		triangle.p[0] = tri[0].p[0];
-		triangle.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
-		triangle.p[2] = tri[0].p[2];
-		tri.emplace_back(triangle);
+		tri2.p[0] = tri1.p[0];
+		tri2.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
+		tri2.p[2] = tri1.p[2];
+		tri.emplace_back(tri2);
 		break;
 	case 0x07:
 	case 0x08:
-		triangle.p[0] = interpolation(g.p[v3], g.p[v0], g.distance[v3], g.distance[v0]);
-		triangle.p[1] = interpolation(g.p[v3], g.p[v2], g.distance[v3], g.distance[v2]);
-		triangle.p[2] = interpolation(g.p[v3], g.p[v1], g.distance[v3], g.distance[v1]);
-		tri.emplace_back(triangle);
+		tri1.p[0] = interpolation(g.p[v3], g.p[v0], g.distance[v3], g.distance[v0]);
+		tri1.p[1] = interpolation(g.p[v3], g.p[v2], g.distance[v3], g.distance[v2]);
+		tri1.p[2] = interpolation(g.p[v3], g.p[v1], g.distance[v3], g.distance[v1]);
+		tri.emplace_back(tri1);
 		break;
 	}
 }
