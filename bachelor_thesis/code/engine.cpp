@@ -161,7 +161,7 @@ glm::mat4 cameraView(Camera* camera)
 	return rotate * translate;
 }
 
-glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, float v1, float v2)
+/*glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, float v1, float v2)
 {
 	glm::vec3 p;
 	double isolevel = 0.0;
@@ -173,6 +173,31 @@ glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, float v1, floa
 		return(p1);
 
 	double mu = (isolevel - v1) / (v2 - v1);
+
+	p.x = p1.x + (float)mu * (p2.x - p1.x);
+	p.y = p1.y + (float)mu * (p2.y - p1.y);
+	p.z = p1.z + (float)mu * (p2.z - p1.z);
+	return p;
+}*/
+
+glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, char v1, char v2)
+{
+	float f1 = (float)v1 / 1000.0f;
+	float f2 = (float)v2 / 1000.0f;
+	
+	glm::vec3 p;
+	float isolevel = 0.0;
+	
+	if (std::abs(isolevel - f1) < 0.00001f)
+		return p1;
+	
+	if (std::abs(isolevel - f2) < 0.00001f)
+		return p2;
+	
+	if (std::abs(f1 - f2) < 0.00001f)
+		return p1;
+	
+	float mu = (isolevel - f1) / (f2 - f1);
 
 	p.x = p1.x + (float)mu * (p2.x - p1.x);
 	p.y = p1.y + (float)mu * (p2.y - p1.y);
