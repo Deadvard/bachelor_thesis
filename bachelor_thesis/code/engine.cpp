@@ -184,7 +184,7 @@ glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, char v1, char 
 {
 	float f1 = (float)v1 / 1000.0f;
 	float f2 = (float)v2 / 1000.0f;
-	
+
 	glm::vec3 p;
 	float isolevel = 0.0;
 	
@@ -233,26 +233,21 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		temp[2].position = glm::vec3(fx + voxelData->offset, fy, fz + voxelData->offset);
 		temp[3].position = glm::vec3(fx, fy, fz + voxelData->offset);
 
+		temp[4].position = glm::vec3(fx, fy + voxelData->offset, fz);
+		temp[5].position = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz);
+		temp[6].position = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz + voxelData->offset);
+		temp[7].position = glm::vec3(fx, fy + voxelData->offset, fz + voxelData->offset);
+
 		int indices[4];
 		indices[0] = 0 + i;
 		indices[1] = 1 + i;
 		indices[2] = 1 + i + size.x * size.y;
 		indices[3] = 0 + i + size.x * size.y;
 
-		temp[0].color = glm::vec3(std::abs(distances[indices[0]]));
-		temp[1].color = glm::vec3(std::abs(distances[indices[1]]));
-		temp[2].color = glm::vec3(std::abs(distances[indices[2]]));
-		temp[3].color = glm::vec3(std::abs(distances[indices[3]]));
-
-		temp[4].position = glm::vec3(fx, fy + voxelData->offset, fz);
-		temp[5].position = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz);
-		temp[6].position = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz + voxelData->offset);
-		temp[7].position = glm::vec3(fx, fy + voxelData->offset, fz + voxelData->offset);
-
-		temp[4].color = glm::vec3(1,0,0);
-		temp[5].color = glm::vec3(1,0,0);
-		temp[6].color = glm::vec3(1,0,0);
-		temp[7].color = glm::vec3(1,0,0);
+		temp[0].color = (float)distances[indices[0]] >= 0.f ? glm::vec3(1,1,1) : glm::vec3(0,0,0);
+		temp[1].color = (float)distances[indices[1]] >= 0.f ? glm::vec3(1,1,1) : glm::vec3(0,0,0);
+		temp[2].color = (float)distances[indices[2]] >= 0.f ? glm::vec3(1,1,1) : glm::vec3(0,0,0);
+		temp[3].color = (float)distances[indices[3]] >= 0.f ? glm::vec3(1,1,1) : glm::vec3(0,0,0);
 
 		for(int j = 0; j < 8; ++j)
 			points.emplace_back(temp[j]);
