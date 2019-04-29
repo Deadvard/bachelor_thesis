@@ -3,7 +3,8 @@
 void initialize(VoxelData* data)
 {
 	data->size = glm::ivec3(64, 64, 64);
-	data->isosurface.distances = new char[data->size.x, data->size.y, data->size.z];
+	data->offset = 0.1f;
+	data->isosurface.distances = new char[data->size.x * data->size.y * data->size.z];
 	densityFunction(data);
 }
 
@@ -18,16 +19,20 @@ void densityFunction(VoxelData * data)
 		int y = (i / data->size.x) % data->size.y;
 		int z = i / (data->size.x * data->size.y);
 
-		glm::vec3 positions[8]; // 8 corners
-		positions[0] = glm::vec3(x, y, z);
-		positions[1] = glm::vec3(x + 1, y, z);
-		positions[2] = glm::vec3(x + 1, y, z + 1);
-		positions[3] = glm::vec3(x, y, z + 1);
+		float fx = (float)x * data->offset;
+		float fy = (float)y * data->offset;
+		float fz = (float)z * data->offset;
 
-		positions[4] = glm::vec3(x, y + 1, z);
-		positions[5] = glm::vec3(x + 1, y + 1, z);
-		positions[6] = glm::vec3(x + 1, y + 1, z + 1);
-		positions[7] = glm::vec3(x, y + 1, z + 1);
+		glm::vec3 positions[8]; // 8 corners
+		positions[0] = glm::vec3(fx, fy, fz);
+		positions[1] = glm::vec3(fx + data->offset, fy, fz);
+		positions[2] = glm::vec3(fx + data->offset, fy, fz + data->offset);
+		positions[3] = glm::vec3(fx, fy, fz + data->offset);
+								 
+		positions[4] = glm::vec3(fx, fy + data->offset, fz);
+		positions[5] = glm::vec3(fx + data->offset, fy + data->offset, fz);
+		positions[6] = glm::vec3(fx + data->offset, fy + data->offset, fz + data->offset);
+		positions[7] = glm::vec3(fx, fy + data->offset, fz + data->offset);
 
 		if (x < data->size.x - 1 && y < data->size.y - 1 && z < data->size.z - 1)
 		{

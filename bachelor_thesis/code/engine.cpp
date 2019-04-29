@@ -40,8 +40,8 @@ void run()
 	VoxelData voxelData = {};
 	initialize(&voxelData);
 
-	tetraVoxelsToMeshes(&voxelData, &renderData);
-	//voxelsToMeshes(&voxelData, &renderData);
+	//tetraVoxelsToMeshes(&voxelData, &renderData);
+	voxelsToMeshes(&voxelData, &renderData);
 	createPoints(&voxelData, &renderData);
 
 	double timestep = 1.0 / 120.0;
@@ -198,11 +198,15 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		int y = (i / voxelData->size.x) % voxelData->size.y;
 		int z = i / (voxelData->size.x * voxelData->size.y);
 
+		float fx = (float)x * voxelData->offset;
+		float fy = (float)y * voxelData->offset;
+		float fz = (float)z * voxelData->offset;
+
 		PosCol temp[8];
-		temp[0].position = glm::vec3(x, y, z);
-		temp[1].position = glm::vec3(x + 1, y, z);
-		temp[2].position = glm::vec3(x + 1, y, z + 1);
-		temp[3].position = glm::vec3(x, y, z + 1);
+		temp[0].position = glm::vec3(fx, fy, fz);
+		temp[1].position = glm::vec3(fx + voxelData->offset, fy, fz);
+		temp[2].position = glm::vec3(fx + voxelData->offset, fy, fz + voxelData->offset);
+		temp[3].position = glm::vec3(fx, fy, fz + voxelData->offset);
 
 		int indices[4];
 		indices[0] = 0 + i;
@@ -215,10 +219,10 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		temp[2].color = glm::vec3(std::abs(distances[indices[2]]));
 		temp[3].color = glm::vec3(std::abs(distances[indices[3]]));
 
-		temp[4].position = glm::vec3(x, y + 1, z);
-		temp[5].position = glm::vec3(x + 1, y + 1, z);
-		temp[6].position = glm::vec3(x + 1, y + 1, z + 1);
-		temp[7].position = glm::vec3(x, y + 1, z + 1);
+		temp[4].position = glm::vec3(fx, fy + voxelData->offset, fz);
+		temp[5].position = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz);
+		temp[6].position = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz + voxelData->offset);
+		temp[7].position = glm::vec3(fx, fy + voxelData->offset, fz + voxelData->offset);
 
 		temp[4].color = glm::vec3(1,0,0);
 		temp[5].color = glm::vec3(1,0,0);
@@ -264,6 +268,10 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 
 		if (x < size.x - 1 && y < size.y - 1 && z < size.z - 1)
 		{
+			float fx = (float)x * voxelData->offset;
+			float fy = (float)y * voxelData->offset;
+			float fz = (float)z * voxelData->offset;
+
 			int indices[8];
 			indices[0] = 0 + i;
 			indices[1] = 1 + i;
@@ -288,15 +296,15 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 			{
 				glm::vec3 positions[8];
 
-				positions[0] = glm::vec3(x, y, z);
-				positions[1] = glm::vec3(x + 1, y, z);
-				positions[2] = glm::vec3(x + 1, y, z + 1);
-				positions[3] = glm::vec3(x, y, z + 1);
-
-				positions[4] = glm::vec3(x, y + 1, z);
-				positions[5] = glm::vec3(x + 1, y + 1, z);
-				positions[6] = glm::vec3(x + 1, y + 1, z + 1);
-				positions[7] = glm::vec3(x, y + 1, z + 1);
+				positions[0] = glm::vec3(fx, fy, fz);
+				positions[1] = glm::vec3(fx + voxelData->offset, fy, fz);
+				positions[2] = glm::vec3(fx + voxelData->offset, fy, fz + voxelData->offset);
+				positions[3] = glm::vec3(fx, fy, fz + voxelData->offset);
+										 
+				positions[4] = glm::vec3(fx, fy + voxelData->offset, fz);
+				positions[5] = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz);
+				positions[6] = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz + voxelData->offset);
+				positions[7] = glm::vec3(fx, fy + voxelData->offset, fz + voxelData->offset);
 
 				glm::vec3 vertices[12];
 
