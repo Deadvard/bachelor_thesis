@@ -189,14 +189,14 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 	};
 
 	glm::ivec3 size = voxelData->size;
-	const float* distances = voxelData->isosurface.distances;
+	const char* distances = voxelData->isosurface.distances;
 
 	std::vector<PosCol> points;
-	for (int i = 0; i < voxelData->WIDTH * voxelData->WIDTH * voxelData->WIDTH; ++i)
+	for (int i = 0; i < voxelData->size.x * voxelData->size.y * voxelData->size.z; ++i)
 	{
-		int x = i % voxelData->WIDTH;
-		int y = (i / voxelData->WIDTH) % voxelData->WIDTH;
-		int z = i / (voxelData->WIDTH * voxelData->WIDTH);
+		int x = i % voxelData->size.x;
+		int y = (i / voxelData->size.x) % voxelData->size.y;
+		int z = i / (voxelData->size.x * voxelData->size.y);
 
 		PosCol temp[8];
 		temp[0].position = glm::vec3(x, y, z);
@@ -254,7 +254,7 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 
 	std::vector<Triangle> triangles;
 	glm::ivec3 size = voxelData->size;
-	const float* distances = voxelData->isosurface.distances;
+	const char* distances = voxelData->isosurface.distances;
 	
 	for (int i = 0; i < size.x * size.y * size.z; ++i)
 	{
@@ -286,7 +286,7 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 
 			if (marchingCubesCase != 0 && marchingCubesCase != 255)
 			{
-				glm::vec3 positions[voxelData->voxelGrid[i].NUM_CORNERS];
+				glm::vec3 positions[8];
 
 				positions[0] = glm::vec3(x, y, z);
 				positions[1] = glm::vec3(x + 1, y, z);
@@ -453,7 +453,7 @@ void tetraVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 {
 	std::vector<Triangle> triangles;
 	glm::ivec3 size = voxelData->size;
-	const float* distances = voxelData->isosurface.distances;
+	const char* distances = voxelData->isosurface.distances;
 
 	for (int i = 0; i < size.x * size.y * size.z; ++i)
 	{

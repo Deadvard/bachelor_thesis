@@ -5,22 +5,12 @@
 
 struct Isosurface
 {
-	float distances[1000];
-};
-
-struct Voxel
-{
-	static const int NUM_CORNERS = 8;
-	float densities[NUM_CORNERS];
+	char* distances;
 };
 
 struct VoxelData
 {
-	static const int WIDTH = 10;
-	Voxel voxelGrid[WIDTH * WIDTH * WIDTH];
-
 	glm::ivec3 size;
-
 	Isosurface isosurface;
 };
 
