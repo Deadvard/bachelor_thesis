@@ -90,7 +90,7 @@ void run()
 
 			renderData.view = cameraView(&camera);				
 			deltaTime -= timestep;
-			update(&renderData);
+			update(&renderData, &voxelData);
 		}
 		
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);

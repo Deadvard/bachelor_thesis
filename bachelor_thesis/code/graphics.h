@@ -5,6 +5,7 @@
 #include "texture.h"
 #include <glm/glm.hpp>
 #include <vector>
+#include "voxel_grid.h"
 
 struct MarchingCubes
 {
@@ -30,6 +31,6 @@ struct RenderData
 
 void initalize(RenderData* data);
 void render(const RenderData* data);
-void update(RenderData* data);
+void update(RenderData* data, VoxelData* voxelData);
 
 #endif

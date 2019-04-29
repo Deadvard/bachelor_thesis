@@ -37,9 +37,15 @@ void render(const RenderData* data)
 	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
 }
 
-void update(RenderData* data)
+void update(RenderData* data, VoxelData* voxelData)
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(data->view));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(data->projection));
+
+	glUseProgram(data->marchingCubes.computeShader);
+
+	glDispatchCompute(8,8,8);
+
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 }
