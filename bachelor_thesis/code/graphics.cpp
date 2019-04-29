@@ -33,7 +33,7 @@ void render(const RenderData* data)
 	uniform(data->pointShader, "view", data->view);
 	uniform(data->pointShader, "projection", data->projection);
 	glBindVertexArray(data->marchingCubes.pt_vao);
-	glPointSize(5.f);
+	glPointSize(2.f);
 	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
 }
 
