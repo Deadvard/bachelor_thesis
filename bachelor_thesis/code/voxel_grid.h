@@ -18,4 +18,6 @@ struct VoxelData
 void initialize(VoxelData* data);
 void densityFunction(VoxelData* data);
 
+void sphere(VoxelData* data, glm::vec3 position, int radius);
+
 #endif
