@@ -306,16 +306,16 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 			indices[5] = 1 + i + size.x;
 			indices[6] = 1 + i + size.x + size.x * size.y;
 			indices[7] = 0 + i + size.x + size.x * size.y;
-
+						
 			unsigned int marchingCubesCase =
-				(distances[indices[7]] < 0.0f) << 7 |
-				(distances[indices[6]] < 0.0f) << 6 |
-				(distances[indices[5]] < 0.0f) << 5 |
-				(distances[indices[4]] < 0.0f) << 4 |
-				(distances[indices[3]] < 0.0f) << 3 |
-				(distances[indices[2]] < 0.0f) << 2 |
-				(distances[indices[1]] < 0.0f) << 1 |
-				(distances[indices[0]] < 0.0f) << 0;
+				(distances[indices[7]] < 0) << 7 |
+				(distances[indices[6]] < 0) << 6 |
+				(distances[indices[5]] < 0) << 5 |
+				(distances[indices[4]] < 0) << 4 |
+				(distances[indices[3]] < 0) << 3 |
+				(distances[indices[2]] < 0) << 2 |
+				(distances[indices[1]] < 0) << 1 |
+				(distances[indices[0]] < 0) << 0;
 
 			if (marchingCubesCase != 0 && marchingCubesCase != 255)
 			{
