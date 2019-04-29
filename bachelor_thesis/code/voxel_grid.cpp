@@ -5,9 +5,8 @@ void initialize(VoxelData* data)
 	data->size = glm::ivec3(64, 64, 64);
 	data->offset = 0.1f;
 	data->isosurface.distances = new char[data->size.x * data->size.y * data->size.z];
-	densityFunction(data);
-
 	memset(data->isosurface.distances, 0, data->size.x * data->size.y * data->size.z);
+	densityFunction(data);	
 }
 
 void densityFunction(VoxelData * data)
@@ -27,10 +26,10 @@ void densityFunction(VoxelData * data)
 		glm::vec3 newPos = glm::vec3(fx, fy, fz);
 		int dist = radius - (int)(1000 * glm::length(newPos));
 
-		if (dist < 255 && dist > -255)
+		if (dist < 100 && dist > -100)
 		{
 			printf("dist = %i\n", dist);
-			data->isosurface.distances[i] = dist;
+			data->isosurface.distances[i] = (char)dist;
 		}
 	}
 }
