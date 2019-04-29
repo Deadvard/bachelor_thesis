@@ -192,7 +192,7 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 	const char* distances = voxelData->isosurface.distances;
 
 	std::vector<PosCol> points;
-	for (int i = 0; i < (voxelData->size.x-1) * (voxelData->size.y-1) * (voxelData->size.z-1); ++i)
+	for (int i = 0; i < size.x * size.y * size.z - 1; ++i)
 	{
 		int x = i % voxelData->size.x;
 		int y = (i / voxelData->size.x) % voxelData->size.y;
