@@ -26,9 +26,9 @@ void densityFunction(VoxelData * data)
 		glm::vec3 newPos = glm::vec3(fx, fy, fz);
 		int dist = radius - (int)(1000 * glm::length(newPos));
 
-		if (dist < 100 && dist > -100)
+		if (dist < 100)
 		{
-			printf("dist = %i\n", dist);
+			if (dist < -100) dist = -100;
 			data->isosurface.distances[i] = (char)dist;
 		}
 	}
