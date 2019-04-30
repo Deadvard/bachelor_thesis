@@ -292,6 +292,33 @@ int triTable[256][16] =
 {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
+/*
+vec3 interpolation(vec3 p1, vec3 p2, char v1, char v2)
+{
+	float f1 = (float)v1 / 1000.0f;
+	float f2 = (float)v2 / 1000.0f;
+
+	vec3 p;
+	float isolevel = 0.0;
+	
+	if (abs(isolevel - f1) < 0.00001f)
+		return p1;
+	
+	if (abs(isolevel - f2) < 0.00001f)
+		return p2;
+	
+	if (abs(f1 - f2) < 0.00001f)
+		return p1;
+	
+	float mu = (isolevel - f1) / (f2 - f1);
+
+	p.x = p1.x + (float)mu * (p2.x - p1.x);
+	p.y = p1.y + (float)mu * (p2.y - p1.y);
+	p.z = p1.z + (float)mu * (p2.z - p1.z);
+	return p;
+}
+*/
+
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 
 
@@ -307,8 +334,23 @@ layout(std430, binding = 5) buffer outBuffer
 
 void main()
 {
-	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	int xMax = 64;
+	int yMax = 64;
+	unsigned int id = gl_GlobalInvocationID.x + (xMax * gl_GlobalInvocationID.y) + (xMax * yMax * gl_GlobalInvocationID.z);
 
-	myOutput[0] = 40;
+	id /= 4;
+
+	
+	unsigned int marchingCubesCase =
+	(float(myInput[id]) < 0) << 7 |
+	(float(myInput[id]) < 0) << 6 |
+	(float(myInput[id]) < 0) << 5 |
+	(float(myInput[id]) < 0) << 4 |
+	(float(myInput[id]) < 0) << 3 |
+	(float(myInput[id]) < 0) << 2 |
+	(float(myInput[id]) < 0) << 1 |
+	(float(myInput[id]) < 0) << 0;
+	
+
 
 }
