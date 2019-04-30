@@ -295,12 +295,20 @@ int triTable[256][16] =
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 
 
-layout(std430, binding = 4) buffer lge 
+layout(std430, binding = 4) buffer inBuffer 
 {
-	int densities[]; // 64 * 64 * 64
+	int myInput[]; // 64 * 64 * 64
+};
+
+layout(std430, binding = 5) buffer outBuffer 
+{
+	int myOutput[]; // 64 * 64 * 64
 };
 
 void main()
 {
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+
+	myOutput[0] = 40;
 
 }
