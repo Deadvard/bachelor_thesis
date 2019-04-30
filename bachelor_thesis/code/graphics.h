@@ -16,7 +16,7 @@ struct MarchingCubes
 	unsigned int numPoints;
 
 	unsigned int computeShader;
-	unsigned int uniformBuffer;
+	unsigned int storageBuffer;
 };
 
 struct RenderData
