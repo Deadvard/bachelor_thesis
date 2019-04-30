@@ -108,6 +108,11 @@ void uniform(unsigned int shader, const char* name, bool value)
 	glUniform1i(glGetUniformLocation(shader, name), (int)value);
 }
 
+void uniform(unsigned int shader, const char * name, char * value, int size)
+{
+
+}
+
 void uniform(unsigned int shader, const char* name, int value)
 {
 	glUniform1i(glGetUniformLocation(shader, name), value);
