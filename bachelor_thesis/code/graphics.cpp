@@ -21,7 +21,7 @@ void initalize(RenderData* data)
 	initializeMarchingCubes(data);
 	data->marchingCubes.tempDistances = new int[64 * 64 * 64];
 	data->marchingCubes.tempVertices = new float[64 * 64 * 64 * 5 * 3 * 3];
-
+	memset(data->marchingCubes.tempVertices, 0, sizeof(float) * 64 * 64 * 64 * 5 * 3 * 3);
 }
 
 void render(const RenderData* data)
@@ -67,7 +67,7 @@ void update(RenderData* data, VoxelData* voxelData)
 	glDispatchCompute(8,8,8);
 	//glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 
-	GLuint*ptr = (GLuint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+	GLfloat*ptr = (GLfloat*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 	
 	for (int i = 0; i < 6; ++i)
 		std::cout << ptr[i] << " ";
