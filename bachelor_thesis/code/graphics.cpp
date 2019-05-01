@@ -61,8 +61,8 @@ void update(RenderData* data, VoxelData* voxelData)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 64 * 64 * 64, &data->marchingCubes.tempDistances[0]);
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float) * 64 * 64 * 64 * 5 * 3 * 3, &data->marchingCubes.tempVertices[0]);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
+	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float) * 64 * 64 * 64 * 5 * 3 * 3, &data->marchingCubes.tempVertices[0]);
 
 	glDispatchCompute(8,8,8);
 	//glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
