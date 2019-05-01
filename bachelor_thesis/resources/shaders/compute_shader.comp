@@ -292,11 +292,11 @@ int triTable[256][16] =
 {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
-/*
-vec3 interpolation(vec3 p1, vec3 p2, char v1, char v2)
+
+vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
 {
-	float f1 = (float)v1 / 1000.0f;
-	float f2 = (float)v2 / 1000.0f;
+	float f1 = float(v1) / 1000.0;
+	float f2 = float(v2) / 1000.0;
 
 	vec3 p;
 	float isolevel = 0.0;
@@ -312,12 +312,12 @@ vec3 interpolation(vec3 p1, vec3 p2, char v1, char v2)
 	
 	float mu = (isolevel - f1) / (f2 - f1);
 
-	p.x = p1.x + (float)mu * (p2.x - p1.x);
-	p.y = p1.y + (float)mu * (p2.y - p1.y);
-	p.z = p1.z + (float)mu * (p2.z - p1.z);
+	p.x = p1.x + float(mu) * (p2.x - p1.x);
+	p.y = p1.y + float(mu) * (p2.y - p1.y);
+	p.z = p1.z + float(mu) * (p2.z - p1.z);
 	return p;
 }
-*/
+
 
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 
@@ -329,7 +329,7 @@ layout(std430, binding = 4) buffer inBuffer
 
 layout(std430, binding = 5) buffer outBuffer 
 {
-	int myOutput[]; // 64 * 64 * 64
+	vec3 myOutput[]; // 64 * 64 * 64
 };
 
 void main()
@@ -338,19 +338,98 @@ void main()
 	int yMax = 64;
 	unsigned int id = gl_GlobalInvocationID.x + (xMax * gl_GlobalInvocationID.y) + (xMax * yMax * gl_GlobalInvocationID.z);
 
-	id /= 4;
+	unsigned int marchingCubesCase =
+	int((myInput[id] < 0)) << 7 |
+	int((myInput[id] < 0)) << 6 |
+	int((myInput[id] < 0)) << 5 |
+	int((myInput[id] < 0)) << 4 |
+	int((myInput[id] < 0)) << 3 |
+	int((myInput[id] < 0)) << 2 |
+	int((myInput[id] < 0)) << 1 |
+	int((myInput[id] < 0)) << 0;
+
+	if(marchingCubesCase != 0 && marchingCubesCase != 255)
+	{
+		unsigned int x = id % xMax;
+		unsigned int y = (id / xMax) % yMax;
+		unsigned int z = id / (xMax * yMax);
+
+		float offset = 0.1;
+
+		float fx = float(x) * offset;
+		float fy = float(y) * offset;
+		float fz = float(z) * offset;
+
+		unsigned int indices[8];
+		indices[0] = 0 + id;
+		indices[1] = 1 + id;
+		indices[2] = 1 + id + xMax * yMax;
+		indices[3] = 0 + id + xMax * yMax;
+		indices[4] = 0 + id + xMax;
+		indices[5] = 1 + id + xMax;
+		indices[6] = 1 + id + xMax + xMax * yMax;
+		indices[7] = 0 + id + xMax + xMax * yMax;
+
+		vec3 positions[8];
+
+		positions[0] = vec3(fx, fy, fz);
+		positions[1] = vec3(fx + offset, fy, fz);
+		positions[2] = vec3(fx + offset, fy, fz + offset);
+		positions[3] = vec3(fx, fy, fz + offset);
+							 
+		positions[4] = vec3(fx, fy + offset, fz);
+		positions[5] = vec3(fx + offset, fy + offset, fz);
+		positions[6] = vec3(fx + offset, fy + offset, fz + offset);
+		positions[7] = vec3(fx, fy + offset, fz + offset);
+
+		vec3 vertices[12];
+
+		if (bool(edgeTable[marchingCubesCase] & 1))
+			vertices[0] = interpolation(positions[0], positions[1], myInput[indices[0]], myInput[indices[1]]);
+		if (bool(edgeTable[marchingCubesCase] & 2))
+			vertices[1] = interpolation(positions[1], positions[2], myInput[indices[1]], myInput[indices[2]]);
+		if (bool(edgeTable[marchingCubesCase] & 4))
+			vertices[2] = interpolation(positions[2], positions[3], myInput[indices[2]], myInput[indices[3]]);
+		if (bool(edgeTable[marchingCubesCase] & 8))
+			vertices[3] = interpolation(positions[3], positions[0], myInput[indices[3]], myInput[indices[0]]);
+		if (bool(edgeTable[marchingCubesCase] & 16))
+			vertices[4] = interpolation(positions[4], positions[5], myInput[indices[4]], myInput[indices[5]]);
+		if (bool(edgeTable[marchingCubesCase] & 32))
+			vertices[5] = interpolation(positions[5], positions[6], myInput[indices[5]], myInput[indices[6]]);
+		if (bool(edgeTable[marchingCubesCase] & 64))
+			vertices[6] = interpolation(positions[6], positions[7], myInput[indices[6]], myInput[indices[7]]);
+		if (bool(edgeTable[marchingCubesCase] & 128))
+			vertices[7] = interpolation(positions[7], positions[4], myInput[indices[7]], myInput[indices[4]]);
+		if (bool(edgeTable[marchingCubesCase] & 256))
+			vertices[8] = interpolation(positions[0], positions[4], myInput[indices[0]], myInput[indices[4]]);
+		if (bool(edgeTable[marchingCubesCase] & 512))
+			vertices[9] = interpolation(positions[1], positions[5], myInput[indices[1]], myInput[indices[5]]);
+		if (bool(edgeTable[marchingCubesCase] & 1024))
+			vertices[10] = interpolation(positions[2], positions[6], myInput[indices[2]], myInput[indices[6]]);
+		if (bool(edgeTable[marchingCubesCase] & 2048))
+			vertices[11] = interpolation(positions[3], positions[7], myInput[indices[3]], myInput[indices[7]]);
+			/*
+		for (int j = 0; triTable[marchingCubesCase][j] != -1; j += 3)
+		{
+			Triangle triangle;
+			triangle.p1 = vertices[triTable[marchingCubesCase][j]];
+			triangle.p2 = vertices[triTable[marchingCubesCase][j + 1]];
+			triangle.p3 = vertices[triTable[marchingCubesCase][j + 2]];
+			triangles.emplace_back(triangle);
+		}
+		*/
+	}
 
 	
-	unsigned int marchingCubesCase =
-	(float(myInput[id]) < 0) << 7 |
-	(float(myInput[id]) < 0) << 6 |
-	(float(myInput[id]) < 0) << 5 |
-	(float(myInput[id]) < 0) << 4 |
-	(float(myInput[id]) < 0) << 3 |
-	(float(myInput[id]) < 0) << 2 |
-	(float(myInput[id]) < 0) << 1 |
-	(float(myInput[id]) < 0) << 0;
-	
+
+
+	/*
+	unsigned int startingBit = (id / 4) + (id % 4) * 8;
+
+	(myInput[id] >> startingBit) & 255;
+
+
+	*/
 
 
 }
