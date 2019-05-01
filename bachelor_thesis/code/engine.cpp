@@ -429,6 +429,7 @@ void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 	}
 
 	std::vector<unsigned int> triangles;
+	triangles.reserve(size_2.x * size_2.y * size_2.z * sizeof(unsigned int));
 
 	for (int i = 0; i < size_2.x * size_2.y * size_2.z; ++i)
 	{
@@ -455,10 +456,10 @@ void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 		
 		if (center != (edges[0] & 255))
 		{
-			quad[0] = indices[1];
-			quad[1] = indices[2];
-			quad[2] = indices[5];
-			quad[3] = indices[6];
+			quad[0] = vert_indices[indices[1]];
+			quad[1] = vert_indices[indices[2]];
+			quad[2] = vert_indices[indices[5]];
+			quad[3] = vert_indices[indices[6]];
 			
 			triangles.push_back(quad[0]);
 			triangles.push_back(quad[1]);
@@ -470,10 +471,10 @@ void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 		}
 		if (center != (edges[1] & 255))
 		{
-			quad[0] = indices[0];
-			quad[1] = indices[3];
-			quad[2] = indices[5];
-			quad[3] = indices[7];
+			quad[0] = vert_indices[indices[0]];
+			quad[1] = vert_indices[indices[3]];
+			quad[2] = vert_indices[indices[5]];
+			quad[3] = vert_indices[indices[7]];
 			
 			triangles.push_back(quad[0]);
 			triangles.push_back(quad[1]);
@@ -485,10 +486,10 @@ void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 		}
 		if (center != (edges[2] & 255))
 		{
-			quad[0] = indices[1];
-			quad[1] = indices[2];
-			quad[2] = indices[5];
-			quad[3] = indices[6];
+			quad[0] = vert_indices[indices[1]];
+			quad[1] = vert_indices[indices[2]];
+			quad[2] = vert_indices[indices[5]];
+			quad[3] = vert_indices[indices[6]];
 			
 			triangles.push_back(quad[0]);
 			triangles.push_back(quad[1]);
@@ -500,10 +501,10 @@ void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 		}
 		if (center != (edges[3] & 255))
 		{
-			quad[0] = indices[0];
-			quad[1] = indices[3];
-			quad[2] = indices[5];
-			quad[3] = indices[7];
+			quad[0] = vert_indices[indices[0]];
+			quad[1] = vert_indices[indices[3]];
+			quad[2] = vert_indices[indices[5]];
+			quad[3] = vert_indices[indices[7]];
 			
 			triangles.push_back(quad[0]);
 			triangles.push_back(quad[1]);
@@ -515,10 +516,10 @@ void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 		}
 		if (center != (edges[4] & 255))
 		{
-			quad[0] = indices[1];
-			quad[1] = indices[2];
-			quad[2] = indices[5];
-			quad[3] = indices[6];
+			quad[0] = vert_indices[indices[1]];
+			quad[1] = vert_indices[indices[2]];
+			quad[2] = vert_indices[indices[5]];
+			quad[3] = vert_indices[indices[6]];
 			
 			triangles.push_back(quad[0]);
 			triangles.push_back(quad[1]);
@@ -530,10 +531,10 @@ void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 		}
 		if (center != (edges[5] & 255))
 		{
-			quad[0] = indices[0];
-			quad[1] = indices[3];
-			quad[2] = indices[5];
-			quad[3] = indices[7];
+			quad[0] = vert_indices[indices[0]];
+			quad[1] = vert_indices[indices[3]];
+			quad[2] = vert_indices[indices[5]];
+			quad[3] = vert_indices[indices[7]];
 			
 			triangles.push_back(quad[0]);
 			triangles.push_back(quad[1]);
