@@ -19,6 +19,7 @@ void initalize(RenderData* data)
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, data->uniformBuffer, 0, 2 * sizeof(glm::mat4));
 
 	initializeMarchingCubes(data);
+	data->marchingCubes.tempDistances = new int[64 * 64 * 64];
 }
 
 void render(const RenderData* data)
@@ -39,33 +40,38 @@ void render(const RenderData* data)
 	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
 }
 #include <iostream>
+
 void update(RenderData* data, VoxelData* voxelData)
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(data->view));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(data->projection));
 
+	for(int i = 0; i < 64 * 64 * 64; ++i)
+		data->marchingCubes.tempDistances[i] = (int)voxelData->isosurface.distances[i];
+
 	glUseProgram(data->marchingCubes.computeShader);
 
+	glBindBuffer(GL_UNIFORM_BUFFER, data->marchingCubes.tableBuffer);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(int) * 256, &edgeTable[0]);
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(int) * 256, sizeof(int) * 256 * 16, &triTable[0][0]);
+
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(char) * 64 * 64 * 64, &voxelData->isosurface.distances[0]);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 64 * 64 * 64, &data->marchingCubes.tempDistances[0]);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(char) * 64 * 64 * 64, &voxelData->isosurface.distances[0]);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 64 * 64 * 64, &data->marchingCubes.tempDistances[0]);
 
 	glDispatchCompute(8,8,8);
-	glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
+	//glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 
 	GLuint*ptr = (GLuint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-
 	/*
 	for (int i = 0; i < 6; ++i)
 		std::cout << ptr[i] << " ";
 	std::cout << '\n';
 	*/
-
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
 }
 
 void initializeMarchingCubes(RenderData * data)
@@ -74,11 +80,16 @@ void initializeMarchingCubes(RenderData * data)
 
 	glGenBuffers(1, &data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(char) * 64 * 64 * 64, nullptr, GL_STATIC_READ);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 64 * 64 * 64, nullptr, GL_STATIC_READ);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, data->marchingCubes.inputBuffer);
 
 	glGenBuffers(1, &data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(char) * 64 * 64 * 64, nullptr, GL_DYNAMIC_COPY);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 64 * 64 * 64, nullptr, GL_DYNAMIC_COPY);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, data->marchingCubes.outputBuffer);
+
+	glGenBuffers(1, &data->marchingCubes.tableBuffer);
+	glBindBuffer(GL_UNIFORM_BUFFER, data->marchingCubes.tableBuffer);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(int) * 256 + sizeof(int) * 256 * 12, nullptr, GL_STATIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 6, data->uniformBuffer);
 }

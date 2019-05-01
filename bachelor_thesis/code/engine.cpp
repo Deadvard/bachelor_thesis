@@ -6,7 +6,6 @@
 
 #include "graphics.h"
 #include "voxel_grid.h"
-#include "tables.h"
 
 #define pi32 3.14159265359f
 
