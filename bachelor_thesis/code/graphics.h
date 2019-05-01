@@ -9,7 +9,7 @@
 
 struct MarchingCubes
 {
-	unsigned int vao, vbo;
+	unsigned int vao, vbo, ebo;
 	unsigned int numTriangles;
 
 	unsigned int pt_vao, pt_vbo;

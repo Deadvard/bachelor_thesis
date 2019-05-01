@@ -338,7 +338,22 @@ void main()
 	int yMax = 64;
 	unsigned int id = gl_GlobalInvocationID.x + (xMax * gl_GlobalInvocationID.y) + (xMax * yMax * gl_GlobalInvocationID.z);
 
+	
+	int bitId = (id % 4) * 8;
 	id /= 4;
+
+	int distance[4];
+	distance[0] = (myInput[id] >> bitId) & 255;
+
+	int indices[8];
+	indices[0] = 0 + id;
+	indices[1] = 1 + id;
+	indices[2] = 1 + id + xMax * yMax;
+	indices[3] = 0 + id + xMax * yMax;
+	indices[4] = 0 + id + xMax;
+	indices[5] = 1 + id + xMax;
+	indices[6] = 1 + id + xMax + xMax * yMax;
+	indices[7] = 0 + id + xMax + xMax * yMax;
 
 	
 	unsigned int marchingCubesCase =

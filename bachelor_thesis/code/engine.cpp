@@ -25,7 +25,7 @@ glm::mat4 cameraView(Camera* camera);
 void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData);
 void createPoints(const VoxelData* voxelData, RenderData* renderData);
 
-void tetraVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData);
+void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData);
 
 void run()
 {
@@ -40,7 +40,7 @@ void run()
 	VoxelData voxelData = {};
 	initialize(&voxelData);
 
-	//tetraVoxelsToMeshes(&voxelData, &renderData);
+	//dcVoxelsToMeshes(&voxelData, &renderData);
 	voxelsToMeshes(&voxelData, &renderData);
 	createPoints(&voxelData, &renderData);
 
@@ -181,27 +181,19 @@ glm::mat4 cameraView(Camera* camera)
 }*/
 
 glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, char v1, char v2)
-{
+{	
+	if (v1 == 0) return p1;	
+	if (v2 == 0) return p2;	
+	if (v1 - v2 == 0) return p1;
+
 	float f1 = (float)v1 / 1000.0f;
 	float f2 = (float)v2 / 1000.0f;
-
+		
+	float mu = -f1 / (f2 - f1);
 	glm::vec3 p;
-	float isolevel = 0.0;
-	
-	if (std::abs(isolevel - f1) < 0.00001f)
-		return p1;
-	
-	if (std::abs(isolevel - f2) < 0.00001f)
-		return p2;
-	
-	if (std::abs(f1 - f2) < 0.00001f)
-		return p1;
-	
-	float mu = (isolevel - f1) / (f2 - f1);
-
-	p.x = p1.x + (float)mu * (p2.x - p1.x);
-	p.y = p1.y + (float)mu * (p2.y - p1.y);
-	p.z = p1.z + (float)mu * (p2.z - p1.z);
+	p.x = p1.x + mu * (p2.x - p1.x);
+	p.y = p1.y + mu * (p2.y - p1.y);
+	p.z = p1.z + mu * (p2.z - p1.z);
 	return p;
 }
 
@@ -378,158 +370,196 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 	}
 }
 
-struct Triangle
+void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 {
-	glm::vec3 p[3];
-};
-
-struct Gridcell
-{
-	glm::vec3 p[8];
-	float distance[8];
-};
-
-void polygoniseTri(Gridcell g, std::vector<Triangle>& tri, int v0, int v1, int v2, int v3)
-{
-	/*
-	   Determine which of the 16 cases we have given which vertices
-	   are above or below the isosurface
-	*/
-
-	unsigned int triindex =
-		(g.distance[v0] < 0.0f) << 0 |
-		(g.distance[v1] < 0.0f) << 1 |
-		(g.distance[v2] < 0.0f) << 2 |
-		(g.distance[v3] < 0.0f) << 3;
-
-	Triangle tri1;
-	Triangle tri2;
-	/* Form the vertices of the triangles for each case */
-	switch (triindex) {
-	case 0x00:
-	case 0x0F:
-		break;
-	case 0x0E:
-	case 0x01:
-		tri1.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
-		tri1.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
-		tri1.p[2] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
-		tri.emplace_back(tri1);
-		break;
-	case 0x0D:
-	case 0x02:
-		tri1.p[0] = interpolation(g.p[v1], g.p[v0], g.distance[v1], g.distance[v0]);
-		tri1.p[1] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
-		tri1.p[2] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
-		tri.emplace_back(tri1);
-		break;
-	case 0x0C:
-	case 0x03:
-		tri1.p[0] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
-		tri1.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
-		tri1.p[2] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
-		tri.emplace_back(tri1);
-
-		tri2.p[0] = tri1.p[2];
-		tri2.p[1] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
-		tri2.p[2] = tri1.p[1];
-		tri.emplace_back(tri2);
-		break;
-	case 0x0B:
-	case 0x04:
-		tri1.p[0] = interpolation(g.p[v2], g.p[v0], g.distance[v2], g.distance[v0]);
-		tri1.p[1] = interpolation(g.p[v2], g.p[v1], g.distance[v2], g.distance[v1]);
-		tri1.p[2] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
-		tri.emplace_back(tri1);
-		break;
-	case 0x0A:
-	case 0x05:
-		tri1.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
-		tri1.p[1] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
-		tri1.p[2] = interpolation(g.p[v0], g.p[v3], g.distance[v0], g.distance[v3]);
-		tri.emplace_back(tri1);
-
-		tri2.p[0] = tri1.p[0];
-		tri2.p[1] = interpolation(g.p[v1], g.p[v2], g.distance[v1], g.distance[v2]);
-		tri2.p[2] = tri1.p[1];
-		tri.emplace_back(tri2);
-		break;
-	case 0x09:
-	case 0x06:
-		tri1.p[0] = interpolation(g.p[v0], g.p[v1], g.distance[v0], g.distance[v1]);
-		tri1.p[1] = interpolation(g.p[v1], g.p[v3], g.distance[v1], g.distance[v3]);
-		tri1.p[2] = interpolation(g.p[v2], g.p[v3], g.distance[v2], g.distance[v3]);
-		tri.emplace_back(tri1);
-
-		tri2.p[0] = tri1.p[0];
-		tri2.p[1] = interpolation(g.p[v0], g.p[v2], g.distance[v0], g.distance[v2]);
-		tri2.p[2] = tri1.p[2];
-		tri.emplace_back(tri2);
-		break;
-	case 0x07:
-	case 0x08:
-		tri1.p[0] = interpolation(g.p[v3], g.p[v0], g.distance[v3], g.distance[v0]);
-		tri1.p[1] = interpolation(g.p[v3], g.p[v2], g.distance[v3], g.distance[v2]);
-		tri1.p[2] = interpolation(g.p[v3], g.p[v1], g.distance[v3], g.distance[v1]);
-		tri.emplace_back(tri1);
-		break;
-	}
-}
-
-
-void tetraVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
-{
-	std::vector<Triangle> triangles;
 	glm::ivec3 size = voxelData->size;
+	glm::ivec3 size_1 = voxelData->size - 1;
+	glm::ivec3 size_2 = voxelData->size - 2;
 	const char* distances = voxelData->isosurface.distances;
+	
+	std::vector<glm::vec3> vertices(size_1.x * size_1.y * size_1.z);
+	std::vector<glm::vec3> normals(size_1.x * size_1.y * size_1.z);
+	std::vector<int> vert_indices(size_1.x * size_1.y * size_1.z);
+	int numIndices = 0;
 
-	for (int i = 0; i < size.x * size.y * size.z; ++i)
+	for (int i = 0; i < size_1.x * size_1.y * size_1.z; ++i)
 	{
 		int x = i % size.x;
 		int y = (i / size.x) % size.y;
 		int z = i / (size.x * size.y);
 
-		if (x < size.x - 1 && y < size.y - 1 && z < size.z - 1)
+		float fx = (float)x * voxelData->offset;
+		float fy = (float)y * voxelData->offset;
+		float fz = (float)z * voxelData->offset;
+
+		int indices[8];
+		indices[0] = 0 + i;
+		indices[1] = 1 + i;
+		indices[2] = 1 + i + size.x * size.y;
+		indices[3] = 0 + i + size.x * size.y;
+		indices[4] = 0 + i + size.x;
+		indices[5] = 1 + i + size.x;
+		indices[6] = 1 + i + size.x + size.x * size.y;
+		indices[7] = 0 + i + size.x + size.x * size.y;
+
+		int caseCode =
+			(distances[indices[7]] < 0) << 7 |
+			(distances[indices[6]] < 0) << 6 |
+			(distances[indices[5]] < 0) << 5 |
+			(distances[indices[4]] < 0) << 4 |
+			(distances[indices[3]] < 0) << 3 |
+			(distances[indices[2]] < 0) << 2 |
+			(distances[indices[1]] < 0) << 1 |
+			(distances[indices[0]] < 0) << 0;
+
+		if (caseCode != 0 && caseCode != 255)
 		{
-			Gridcell grid;
-			
-			grid.p[0] = glm::vec3(x, y, z);
-			grid.p[1] = glm::vec3(x + 1, y, z);
-			grid.p[2] = glm::vec3(x + 1, y, z + 1);
-			grid.p[3] = glm::vec3(x, y, z + 1);
+			glm::vec3 positions[8];
+			positions[0] = glm::vec3(fx, fy, fz);
+			positions[1] = glm::vec3(fx + voxelData->offset, fy, fz);
+			positions[2] = glm::vec3(fx + voxelData->offset, fy, fz + voxelData->offset);
+			positions[3] = glm::vec3(fx, fy, fz + voxelData->offset);
+			positions[4] = glm::vec3(fx, fy + voxelData->offset, fz);
+			positions[5] = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz);
+			positions[6] = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz + voxelData->offset);
+			positions[7] = glm::vec3(fx, fy + voxelData->offset, fz + voxelData->offset);
 
-			grid.p[4] = glm::vec3(x, y + 1, z);
-			grid.p[5] = glm::vec3(x + 1, y + 1, z);
-			grid.p[6] = glm::vec3(x + 1, y + 1, z + 1);
-			grid.p[7] = glm::vec3(x, y + 1, z + 1);
-
-			grid.distance[0] = distances[0 + i];
-			grid.distance[1] = distances[1 + i];
-			grid.distance[2] = distances[1 + i + size.x * size.y];
-			grid.distance[3] = distances[0 + i + size.x * size.y];
-			grid.distance[4] = distances[0 + i + size.x];
-			grid.distance[5] = distances[1 + i + size.x];
-			grid.distance[6] = distances[1 + i + size.x + size.x * size.y];
-			grid.distance[7] = distances[0 + i + size.x + size.x * size.y];
-
-			polygoniseTri(grid, triangles, 0, 2, 3, 7);
-			polygoniseTri(grid, triangles, 0, 2, 6, 7);
-			polygoniseTri(grid, triangles, 0, 4, 6, 7);
-			polygoniseTri(grid, triangles, 0, 6, 1, 2);
-			polygoniseTri(grid, triangles, 0, 6, 1, 4);
-			polygoniseTri(grid, triangles, 5, 6, 1, 4);
+			vertices[numIndices] = glm::vec3(fx + 0.05f, fy + 0.05f, fz + 0.05f);
+			vert_indices[i] = numIndices++;
 		}
 	}
 
-	if (triangles.size() > 0)
+	std::vector<unsigned int> triangles;
+
+	for (int i = 0; i < size_2.x * size_2.y * size_2.z; ++i)
+	{
+		int indices[8];
+		indices[0] = 0 + i;
+		indices[1] = 1 + i;
+		indices[2] = 1 + i + size.x * size.y;
+		indices[3] = 0 + i + size.x * size.y;
+		indices[4] = 0 + i + size.x;
+		indices[5] = 1 + i + size.x;
+		indices[6] = 1 + i + size.x + size.x * size.y;
+		indices[7] = 0 + i + size.x + size.x * size.y;
+
+		char edges[6];
+		edges[0] = distances[indices[6] + 1];
+		edges[1] = distances[indices[6] - 1];
+		edges[2] = distances[indices[6] + size.x];
+		edges[3] = distances[indices[6] - size.x];
+		edges[4] = distances[indices[6] + size.x * size.y];
+		edges[5] = distances[indices[6] - size.x * size.y];
+
+		char center = distances[indices[6]] & 255;
+		unsigned int quad[4];
+		
+		if (center != (edges[0] & 255))
+		{
+			quad[0] = indices[1];
+			quad[1] = indices[2];
+			quad[2] = indices[5];
+			quad[3] = indices[6];
+			
+			triangles.push_back(quad[0]);
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+			triangles.push_back(quad[3]);
+		}
+		if (center != (edges[1] & 255))
+		{
+			quad[0] = indices[0];
+			quad[1] = indices[3];
+			quad[2] = indices[5];
+			quad[3] = indices[7];
+			
+			triangles.push_back(quad[0]);
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+			triangles.push_back(quad[3]);
+		}
+		if (center != (edges[2] & 255))
+		{
+			quad[0] = indices[1];
+			quad[1] = indices[2];
+			quad[2] = indices[5];
+			quad[3] = indices[6];
+			
+			triangles.push_back(quad[0]);
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+			triangles.push_back(quad[3]);
+		}
+		if (center != (edges[3] & 255))
+		{
+			quad[0] = indices[0];
+			quad[1] = indices[3];
+			quad[2] = indices[5];
+			quad[3] = indices[7];
+			
+			triangles.push_back(quad[0]);
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+			triangles.push_back(quad[3]);
+		}
+		if (center != (edges[4] & 255))
+		{
+			quad[0] = indices[1];
+			quad[1] = indices[2];
+			quad[2] = indices[5];
+			quad[3] = indices[6];
+			
+			triangles.push_back(quad[0]);
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+			triangles.push_back(quad[3]);
+		}
+		if (center != (edges[5] & 255))
+		{
+			quad[0] = indices[0];
+			quad[1] = indices[3];
+			quad[2] = indices[5];
+			quad[3] = indices[7];
+			
+			triangles.push_back(quad[0]);
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+
+			triangles.push_back(quad[1]);
+			triangles.push_back(quad[2]);
+			triangles.push_back(quad[3]);
+		}
+	}
+
+	if (numIndices > 0)
 	{
 		glGenVertexArrays(1, &renderData->marchingCubes.vao);
 		glBindVertexArray(renderData->marchingCubes.vao);
 		glGenBuffers(1, &renderData->marchingCubes.vbo);
+		glGenBuffers(1, &renderData->marchingCubes.ebo);
 		glBindBuffer(GL_ARRAY_BUFFER, renderData->marchingCubes.vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * triangles.size(), &triangles[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * numIndices, &vertices[0], GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderData->marchingCubes.ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * triangles.size(), &triangles[0], GL_STATIC_DRAW);
+
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 		glEnableVertexAttribArray(0);
-		renderData->marchingCubes.numTriangles = (int)triangles.size();
+		renderData->marchingCubes.numTriangles = (int)triangles.size() / 3;
 	}
 }
