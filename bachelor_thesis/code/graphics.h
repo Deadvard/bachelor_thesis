@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "voxel_grid.h"
+#include "tables.h"
 
 struct MarchingCubes
 {
@@ -19,6 +20,10 @@ struct MarchingCubes
 	int* tempDistances;
 	unsigned int inputBuffer;
 	unsigned int outputBuffer;
+
+	unsigned int tableBuffer;
+
+
 };
 
 struct RenderData
