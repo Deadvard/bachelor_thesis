@@ -18,6 +18,7 @@ struct MarchingCubes
 
 	unsigned int computeShader;
 	int* tempDistances;
+	float* tempVertices;
 	unsigned int inputBuffer;
 	unsigned int outputBuffer;
 
