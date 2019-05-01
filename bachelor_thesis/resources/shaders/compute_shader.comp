@@ -50,6 +50,11 @@ void main()
 	int yMax = 64;
 	unsigned int id = gl_GlobalInvocationID.x + (xMax * gl_GlobalInvocationID.y) + (xMax * yMax * gl_GlobalInvocationID.z);
 
+	myOutput[0] = 10;
+	myOutput[1] = 1030;
+
+	myOutput[2] = 1200;
+
 	unsigned int marchingCubesCase =
 	int((myInput[id] < 0)) << 7 |
 	int((myInput[id] < 0)) << 6 |
@@ -134,7 +139,6 @@ void main()
 			myOutput[id++] = vertices[triTable[marchingCubesCase + (j + 2) * 256]].x;
 			myOutput[id++] = vertices[triTable[marchingCubesCase + (j + 2) * 256]].y;
 			myOutput[id++] = vertices[triTable[marchingCubesCase + (j + 2) * 256]].z;
-
 		}
 		
 	}
