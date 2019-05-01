@@ -60,17 +60,17 @@ void update(RenderData* data, VoxelData* voxelData)
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 64 * 64 * 64, &data->marchingCubes.tempDistances[0]);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 64 * 64 * 64, &data->marchingCubes.tempDistances[0]);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float) * 64 * 64 * 64 * 5 * 3 * 3, &data->marchingCubes.tempDistances[0]);
 
 	glDispatchCompute(8,8,8);
 	//glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 
 	GLuint*ptr = (GLuint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-	/*
+	
 	for (int i = 0; i < 6; ++i)
 		std::cout << ptr[i] << " ";
 	std::cout << '\n';
-	*/
+	
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
@@ -85,7 +85,7 @@ void initializeMarchingCubes(RenderData * data)
 
 	glGenBuffers(1, &data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 64 * 64 * 64, nullptr, GL_DYNAMIC_COPY);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * 64 * 64 * 64 * 5 * 3 * 3, nullptr, GL_DYNAMIC_COPY);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, data->marchingCubes.outputBuffer);
 
 	glGenBuffers(1, &data->marchingCubes.tableBuffer);

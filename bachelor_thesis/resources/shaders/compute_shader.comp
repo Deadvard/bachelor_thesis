@@ -44,7 +44,6 @@ layout(std140, binding = 6) buffer tables
 	int triTable[256 * 16];
 };
 
-
 void main()
 {
 	int xMax = 64;
