@@ -433,116 +433,88 @@ void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 
 	for (int i = 0; i < size_2.x * size_2.y * size_2.z; ++i)
 	{
-		int indices[8];
-		indices[0] = 0 + i;
-		indices[1] = 1 + i;
-		indices[2] = 1 + i + size.x * size.y;
-		indices[3] = 0 + i + size.x * size.y;
-		indices[4] = 0 + i + size.x;
-		indices[5] = 1 + i + size.x;
-		indices[6] = 1 + i + size.x + size.x * size.y;
-		indices[7] = 0 + i + size.x + size.x * size.y;
+		unsigned int centerID = 1 + i + size.x + size.x * size.y;
 
 		char edges[6];
-		edges[0] = distances[indices[6] + 1];
-		edges[1] = distances[indices[6] - 1];
-		edges[2] = distances[indices[6] + size.x];
-		edges[3] = distances[indices[6] - size.x];
-		edges[4] = distances[indices[6] + size.x * size.y];
-		edges[5] = distances[indices[6] - size.x * size.y];
+		edges[0] = distances[centerID + 1];
+		edges[1] = distances[centerID - 1];
+		edges[2] = distances[centerID + size.x];
+		edges[3] = distances[centerID - size.x];
+		edges[4] = distances[centerID + size.x * size.y];
+		edges[5] = distances[centerID - size.x * size.y];
 
-		char center = distances[indices[6]] & 255;
-		unsigned int quad[4];
+		char center = distances[centerID] & 255;
+
+		unsigned int cube[8];
+		cube[0] = vert_indices[0 + i];
+		cube[1] = vert_indices[1 + i];
+		cube[2] = vert_indices[1 + i + size.x * size.y];
+		cube[3] = vert_indices[0 + i + size.x * size.y];
+		cube[4] = vert_indices[0 + i + size.x];
+		cube[5] = vert_indices[1 + i + size.x];
+		cube[6] = vert_indices[1 + i + size.x + size.x * size.y];
+		cube[7] = vert_indices[0 + i + size.x + size.x * size.y];
 		
 		if (center != (edges[0] & 255))
-		{
-			quad[0] = vert_indices[indices[1]];
-			quad[1] = vert_indices[indices[2]];
-			quad[2] = vert_indices[indices[5]];
-			quad[3] = vert_indices[indices[6]];
-			
-			triangles.push_back(quad[0]);
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
+		{			
+			triangles.push_back(cube[1]);
+			triangles.push_back(cube[2]);
+			triangles.push_back(cube[6]);
 
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
-			triangles.push_back(quad[3]);
+			triangles.push_back(cube[6]);
+			triangles.push_back(cube[5]);
+			triangles.push_back(cube[1]);
 		}
 		if (center != (edges[1] & 255))
 		{
-			quad[0] = vert_indices[indices[0]];
-			quad[1] = vert_indices[indices[3]];
-			quad[2] = vert_indices[indices[5]];
-			quad[3] = vert_indices[indices[7]];
-			
-			triangles.push_back(quad[0]);
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
+			triangles.push_back(cube[3]);
+			triangles.push_back(cube[0]);
+			triangles.push_back(cube[4]);
 
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
-			triangles.push_back(quad[3]);
+			triangles.push_back(cube[4]);
+			triangles.push_back(cube[7]);
+			triangles.push_back(cube[3]);	
 		}
 		if (center != (edges[2] & 255))
-		{
-			quad[0] = vert_indices[indices[1]];
-			quad[1] = vert_indices[indices[2]];
-			quad[2] = vert_indices[indices[5]];
-			quad[3] = vert_indices[indices[6]];
-			
-			triangles.push_back(quad[0]);
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
+		{			
+			triangles.push_back(cube[5]);
+			triangles.push_back(cube[4]);
+			triangles.push_back(cube[7]);
 
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
-			triangles.push_back(quad[3]);
+			triangles.push_back(cube[7]);
+			triangles.push_back(cube[6]);
+			triangles.push_back(cube[5]);
 		}
 		if (center != (edges[3] & 255))
 		{
-			quad[0] = vert_indices[indices[0]];
-			quad[1] = vert_indices[indices[3]];
-			quad[2] = vert_indices[indices[5]];
-			quad[3] = vert_indices[indices[7]];
-			
-			triangles.push_back(quad[0]);
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
+			triangles.push_back(cube[0]);
+			triangles.push_back(cube[1]);
+			triangles.push_back(cube[2]);
 
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
-			triangles.push_back(quad[3]);
+			triangles.push_back(cube[2]);
+			triangles.push_back(cube[3]);
+			triangles.push_back(cube[0]);
 		}
 		if (center != (edges[4] & 255))
-		{
-			quad[0] = vert_indices[indices[1]];
-			quad[1] = vert_indices[indices[2]];
-			quad[2] = vert_indices[indices[5]];
-			quad[3] = vert_indices[indices[6]];
-			
-			triangles.push_back(quad[0]);
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
+		{		
+			triangles.push_back(cube[3]);
+			triangles.push_back(cube[2]);
+			triangles.push_back(cube[6]);
 
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
-			triangles.push_back(quad[3]);
+			triangles.push_back(cube[6]);
+			triangles.push_back(cube[7]);
+			triangles.push_back(cube[3]);
+				
 		}
 		if (center != (edges[5] & 255))
-		{
-			quad[0] = vert_indices[indices[0]];
-			quad[1] = vert_indices[indices[3]];
-			quad[2] = vert_indices[indices[5]];
-			quad[3] = vert_indices[indices[7]];
-			
-			triangles.push_back(quad[0]);
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
+		{		
+			triangles.push_back(cube[0]);
+			triangles.push_back(cube[4]);
+			triangles.push_back(cube[5]);
 
-			triangles.push_back(quad[1]);
-			triangles.push_back(quad[2]);
-			triangles.push_back(quad[3]);
+			triangles.push_back(cube[5]);
+			triangles.push_back(cube[1]);
+			triangles.push_back(cube[0]);
 		}
 	}
 
