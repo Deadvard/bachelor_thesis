@@ -24,8 +24,6 @@ glm::mat4 cameraView(Camera* camera);
 void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData);
 void createPoints(const VoxelData* voxelData, RenderData* renderData);
 
-void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData);
-
 void run()
 {
 	GLFWwindow* window = createWindow(1280, 720);
@@ -39,7 +37,6 @@ void run()
 	VoxelData voxelData = {};
 	initialize(&voxelData);
 
-	//dcVoxelsToMeshes(&voxelData, &renderData);
 	voxelsToMeshes(&voxelData, &renderData);
 	createPoints(&voxelData, &renderData);
 
@@ -159,25 +156,6 @@ glm::mat4 cameraView(Camera* camera)
 
 	return rotate * translate;
 }
-
-/*glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, float v1, float v2)
-{
-	glm::vec3 p;
-	double isolevel = 0.0;
-	if (std::abs(isolevel - v1) < 0.00001)
-		return(p1);
-	if (std::abs(isolevel - v2) < 0.00001)
-		return(p2);
-	if (std::abs(v1 - v2) < 0.00001)
-		return(p1);
-
-	double mu = (isolevel - v1) / (v2 - v1);
-
-	p.x = p1.x + (float)mu * (p2.x - p1.x);
-	p.y = p1.y + (float)mu * (p2.y - p1.y);
-	p.z = p1.z + (float)mu * (p2.z - p1.z);
-	return p;
-}*/
 
 glm::vec3 interpolation(const glm::vec3& p1, const glm::vec3& p2, char v1, char v2)
 {	
@@ -366,172 +344,5 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 		glEnableVertexAttribArray(0);
 		renderData->marchingCubes.numTriangles = (int)triangles.size();
-	}
-}
-
-void dcVoxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
-{
-	glm::ivec3 size = voxelData->size;
-	glm::ivec3 size_1 = voxelData->size - 1;
-	glm::ivec3 size_2 = voxelData->size - 2;
-	const char* distances = voxelData->isosurface.distances;
-	
-	std::vector<glm::vec3> vertices(size_1.x * size_1.y * size_1.z);
-	std::vector<glm::vec3> normals(size_1.x * size_1.y * size_1.z);
-	std::vector<int> vert_indices(size_1.x * size_1.y * size_1.z);
-	int numIndices = 0;
-
-	for (int i = 0; i < size_1.x * size_1.y * size_1.z; ++i)
-	{
-		int x = i % size.x;
-		int y = (i / size.x) % size.y;
-		int z = i / (size.x * size.y);
-
-		float fx = (float)x * voxelData->offset;
-		float fy = (float)y * voxelData->offset;
-		float fz = (float)z * voxelData->offset;
-
-		int indices[8];
-		indices[0] = 0 + i;
-		indices[1] = 1 + i;
-		indices[2] = 1 + i + size.x * size.y;
-		indices[3] = 0 + i + size.x * size.y;
-		indices[4] = 0 + i + size.x;
-		indices[5] = 1 + i + size.x;
-		indices[6] = 1 + i + size.x + size.x * size.y;
-		indices[7] = 0 + i + size.x + size.x * size.y;
-
-		int caseCode =
-			(distances[indices[7]] < 0) << 7 |
-			(distances[indices[6]] < 0) << 6 |
-			(distances[indices[5]] < 0) << 5 |
-			(distances[indices[4]] < 0) << 4 |
-			(distances[indices[3]] < 0) << 3 |
-			(distances[indices[2]] < 0) << 2 |
-			(distances[indices[1]] < 0) << 1 |
-			(distances[indices[0]] < 0) << 0;
-
-		if (caseCode != 0 && caseCode != 255)
-		{
-			glm::vec3 positions[8];
-			positions[0] = glm::vec3(fx, fy, fz);
-			positions[1] = glm::vec3(fx + voxelData->offset, fy, fz);
-			positions[2] = glm::vec3(fx + voxelData->offset, fy, fz + voxelData->offset);
-			positions[3] = glm::vec3(fx, fy, fz + voxelData->offset);
-			positions[4] = glm::vec3(fx, fy + voxelData->offset, fz);
-			positions[5] = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz);
-			positions[6] = glm::vec3(fx + voxelData->offset, fy + voxelData->offset, fz + voxelData->offset);
-			positions[7] = glm::vec3(fx, fy + voxelData->offset, fz + voxelData->offset);
-
-			vertices[numIndices] = glm::vec3(fx + 0.05f, fy + 0.05f, fz + 0.05f);
-			vert_indices[i] = numIndices++;
-		}
-	}
-
-	std::vector<unsigned int> triangles;
-	triangles.reserve(size_2.x * size_2.y * size_2.z * sizeof(unsigned int));
-
-	for (int i = 0; i < size_2.x * size_2.y * size_2.z; ++i)
-	{
-		unsigned int centerID = 1 + i + size.x + size.x * size.y;
-
-		char edges[6];
-		edges[0] = distances[centerID + 1];
-		edges[1] = distances[centerID - 1];
-		edges[2] = distances[centerID + size.x];
-		edges[3] = distances[centerID - size.x];
-		edges[4] = distances[centerID + size.x * size.y];
-		edges[5] = distances[centerID - size.x * size.y];
-
-		char center = distances[centerID] & 255;
-
-		unsigned int cube[8];
-		cube[0] = vert_indices[0 + i];
-		cube[1] = vert_indices[1 + i];
-		cube[2] = vert_indices[1 + i + size.x * size.y];
-		cube[3] = vert_indices[0 + i + size.x * size.y];
-		cube[4] = vert_indices[0 + i + size.x];
-		cube[5] = vert_indices[1 + i + size.x];
-		cube[6] = vert_indices[1 + i + size.x + size.x * size.y];
-		cube[7] = vert_indices[0 + i + size.x + size.x * size.y];
-		
-		if (center != (edges[0] & 255))
-		{			
-			triangles.push_back(cube[1]);
-			triangles.push_back(cube[2]);
-			triangles.push_back(cube[6]);
-
-			triangles.push_back(cube[6]);
-			triangles.push_back(cube[5]);
-			triangles.push_back(cube[1]);
-		}
-		if (center != (edges[1] & 255))
-		{
-			triangles.push_back(cube[3]);
-			triangles.push_back(cube[0]);
-			triangles.push_back(cube[4]);
-
-			triangles.push_back(cube[4]);
-			triangles.push_back(cube[7]);
-			triangles.push_back(cube[3]);	
-		}
-		if (center != (edges[2] & 255))
-		{			
-			triangles.push_back(cube[5]);
-			triangles.push_back(cube[4]);
-			triangles.push_back(cube[7]);
-
-			triangles.push_back(cube[7]);
-			triangles.push_back(cube[6]);
-			triangles.push_back(cube[5]);
-		}
-		if (center != (edges[3] & 255))
-		{
-			triangles.push_back(cube[0]);
-			triangles.push_back(cube[1]);
-			triangles.push_back(cube[2]);
-
-			triangles.push_back(cube[2]);
-			triangles.push_back(cube[3]);
-			triangles.push_back(cube[0]);
-		}
-		if (center != (edges[4] & 255))
-		{		
-			triangles.push_back(cube[3]);
-			triangles.push_back(cube[2]);
-			triangles.push_back(cube[6]);
-
-			triangles.push_back(cube[6]);
-			triangles.push_back(cube[7]);
-			triangles.push_back(cube[3]);
-				
-		}
-		if (center != (edges[5] & 255))
-		{		
-			triangles.push_back(cube[0]);
-			triangles.push_back(cube[4]);
-			triangles.push_back(cube[5]);
-
-			triangles.push_back(cube[5]);
-			triangles.push_back(cube[1]);
-			triangles.push_back(cube[0]);
-		}
-	}
-
-	if (numIndices > 0)
-	{
-		glGenVertexArrays(1, &renderData->marchingCubes.vao);
-		glBindVertexArray(renderData->marchingCubes.vao);
-		glGenBuffers(1, &renderData->marchingCubes.vbo);
-		glGenBuffers(1, &renderData->marchingCubes.ebo);
-		glBindBuffer(GL_ARRAY_BUFFER, renderData->marchingCubes.vbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * numIndices, &vertices[0], GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderData->marchingCubes.ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * triangles.size(), &triangles[0], GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-		glEnableVertexAttribArray(0);
-		renderData->marchingCubes.numTriangles = (int)triangles.size() / 3;
 	}
 }
