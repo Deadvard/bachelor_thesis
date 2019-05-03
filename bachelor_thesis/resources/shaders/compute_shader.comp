@@ -123,9 +123,11 @@ void main()
 			vertices[11] = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
 
 		int offset = 0;
+
+		offset +=3;
 		for (int j = 0; triTable[marchingCubesCase + j * 256] != -1; j += 3)
 		{
-			offset+=9;
+			offset+=3;
 		}
 		verticesPerCell[id] = offset;
 		
