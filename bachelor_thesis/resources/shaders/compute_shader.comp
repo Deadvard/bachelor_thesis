@@ -29,7 +29,7 @@ layout (local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 
 layout(std430, binding = 4) buffer inBuffer
 {
-	int distances[]; // 64 * 64 * 64
+	int distances[]; // 65 * 65 * 65
 };
 
 layout(std430, packed, binding = 5) buffer outBuffer
@@ -48,19 +48,27 @@ void main()
 	int xMax = 64;
 	int yMax = 64;
 	unsigned int id = gl_GlobalInvocationID.x + (xMax * gl_GlobalInvocationID.y) + (xMax * yMax * gl_GlobalInvocationID.z);
-
-	verticesPerCell[id] = 0;
+	
+	unsigned int indices[8];
+	indices[0] = 0 + id;
+	indices[1] = 1 + id;
+	indices[2] = 1 + id + xMax * yMax;
+	indices[3] = 0 + id + xMax * yMax;
+	indices[4] = 0 + id + xMax;
+	indices[5] = 1 + id + xMax;
+	indices[6] = 1 + id + xMax + xMax * yMax;
+	indices[7] = 0 + id + xMax + xMax * yMax;
 
 	unsigned int marchingCubesCase =
-	int((distances[id] < 0)) << 7 |
-	int((distances[id] < 0)) << 6 |
-	int((distances[id] < 0)) << 5 |
-	int((distances[id] < 0)) << 4 |
-	int((distances[id] < 0)) << 3 |
-	int((distances[id] < 0)) << 2 |
-	int((distances[id] < 0)) << 1 |
-	int((distances[id] < 0)) << 0;
-
+	int(distances[indices[7]] < 0) << 7 |
+	int(distances[indices[6]] < 0) << 6 |
+	int(distances[indices[5]] < 0) << 5 |
+	int(distances[indices[4]] < 0) << 4 |
+	int(distances[indices[3]] < 0) << 3 |
+	int(distances[indices[2]] < 0) << 2 |
+	int(distances[indices[1]] < 0) << 1 |
+	int(distances[indices[0]] < 0) << 0;
+	
 	if(marchingCubesCase != 0 && marchingCubesCase != 255)
 	{
 		unsigned int x = id % xMax;
@@ -72,16 +80,6 @@ void main()
 		float fx = float(x) * voxelOffset;
 		float fy = float(y) * voxelOffset;
 		float fz = float(z) * voxelOffset;
-
-		unsigned int indices[8];
-		indices[0] = 0 + id;
-		indices[1] = 1 + id;
-		indices[2] = 1 + id + xMax * yMax;
-		indices[3] = 0 + id + xMax * yMax;
-		indices[4] = 0 + id + xMax;
-		indices[5] = 1 + id + xMax;
-		indices[6] = 1 + id + xMax + xMax * yMax;
-		indices[7] = 0 + id + xMax + xMax * yMax;
 
 		vec3 positions[8];
 

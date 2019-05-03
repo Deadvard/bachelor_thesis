@@ -2,10 +2,10 @@
 
 void initialize(VoxelData* data)
 {
-	data->size = glm::ivec3(64, 64, 64);
+	data->distancesSize = glm::ivec3(65, 65, 65);
 	data->offset = 0.1f;
-	data->isosurface.distances = new char[data->size.x * data->size.y * data->size.z];
-	memset(data->isosurface.distances, 0, data->size.x * data->size.y * data->size.z);
+	data->isosurface.distances = new char[data->distancesSize.x * data->distancesSize.y * data->distancesSize.z];
+	memset(data->isosurface.distances, 0, data->distancesSize.x * data->distancesSize.y * data->distancesSize.z);
 	sphere(data, glm::vec3(4.0f), 1.0f);
 	
 	AABB box;
@@ -16,11 +16,12 @@ void initialize(VoxelData* data)
 
 void sphere(VoxelData* data, glm::vec3 position, float radius)
 {
-	for (int i = 0; i < data->size.x * data->size.y * data->size.z; ++i)
+	glm::ivec3 size = data->distancesSize;
+	for (int i = 0; i < size.x * size.y * size.z; ++i)
 	{
-		int x = i % data->size.x;
-		int y = (i / data->size.x) % data->size.y;
-		int z = i / (data->size.x * data->size.y);
+		int x = i % size.x;
+		int y = (i / size.x) % size.y;
+		int z = i / (size.x * size.y);
 
 		float fx = (float)x * data->offset;
 		float fy = (float)y * data->offset;
@@ -39,11 +40,12 @@ void sphere(VoxelData* data, glm::vec3 position, float radius)
 
 void aabb(VoxelData* data, const AABB& aabb)
 {
-	for (int i = 0; i < data->size.x * data->size.y * data->size.z; ++i)
+	glm::ivec3 size = data->distancesSize;
+	for (int i = 0; i < size.x * size.y * size.z; ++i)
 	{
-		int x = i % data->size.x;
-		int y = (i / data->size.x) % data->size.y;
-		int z = i / (data->size.x * data->size.y);
+		int x = i % size.x;
+		int y = (i / size.x) % size.y;
+		int z = i / (size.x * size.y);
 
 		float fx = (float)x * data->offset;
 		float fy = (float)y * data->offset;

@@ -11,7 +11,7 @@ struct Isosurface
 struct VoxelData
 {
 	float offset;
-	glm::ivec3 size;
+	glm::ivec3 distancesSize;
 	Isosurface isosurface;
 };
 

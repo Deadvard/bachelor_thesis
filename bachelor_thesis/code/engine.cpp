@@ -182,15 +182,15 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 		glm::vec3 color;
 	};
 
-	glm::ivec3 size = voxelData->size;
+	glm::ivec3 size = voxelData->distancesSize;
 	const char* distances = voxelData->isosurface.distances;
 
 	std::vector<PosCol> points;
 	for (int i = 0; i < size.x * size.y * (size.z - 1); ++i)
 	{
-		int x = i % voxelData->size.x;
-		int y = (i / voxelData->size.x) % voxelData->size.y;
-		int z = i / (voxelData->size.x * voxelData->size.y);
+		int x = i % size.x;
+		int y = (i / size.x) % size.y;
+		int z = i / (size.x * size.y);
 
 		float fx = (float)x * voxelData->offset;
 		float fy = (float)y * voxelData->offset;
@@ -246,7 +246,7 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 	};
 
 	std::vector<Triangle> triangles;
-	glm::ivec3 size = voxelData->size;
+	glm::ivec3 size = voxelData->distancesSize;
 	const char* distances = voxelData->isosurface.distances;
 	
 	for (int i = 0; i < size.x * size.y * size.z; ++i)
