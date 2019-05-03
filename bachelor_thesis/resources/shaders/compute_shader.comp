@@ -72,64 +72,13 @@ void main()
 
 	if(marchingCubesCase != 0 && marchingCubesCase != 255)
 	{
-		unsigned int x = id % xMax;
-		unsigned int y = (id / xMax) % yMax;
-		unsigned int z = id / (xMax * yMax);
-
-		float voxelOffset = 0.1;
-
-		float fx = float(x) * voxelOffset;
-		float fy = float(y) * voxelOffset;
-		float fz = float(z) * voxelOffset;
-
-		vec3 positions[8];
-
-		positions[0] = vec3(fx, fy, fz);
-		positions[1] = vec3(fx + voxelOffset, fy, fz);
-		positions[2] = vec3(fx + voxelOffset, fy, fz + voxelOffset);
-		positions[3] = vec3(fx, fy, fz + voxelOffset);
-							 
-		positions[4] = vec3(fx, fy + voxelOffset, fz);
-		positions[5] = vec3(fx + voxelOffset, fy + voxelOffset, fz);
-		positions[6] = vec3(fx + voxelOffset, fy + voxelOffset, fz + voxelOffset);
-		positions[7] = vec3(fx, fy + voxelOffset, fz + voxelOffset);
-
-		vec3 vertices[12];
-
-		if (bool(edgeTable[marchingCubesCase] & 1))
-			vertices[0] = interpolation(positions[0], positions[1], distances[indices[0]], distances[indices[1]]);
-		if (bool(edgeTable[marchingCubesCase] & 2))
-			vertices[1] = interpolation(positions[1], positions[2], distances[indices[1]], distances[indices[2]]);
-		if (bool(edgeTable[marchingCubesCase] & 4))
-			vertices[2] = interpolation(positions[2], positions[3], distances[indices[2]], distances[indices[3]]);
-		if (bool(edgeTable[marchingCubesCase] & 8))
-			vertices[3] = interpolation(positions[3], positions[0], distances[indices[3]], distances[indices[0]]);
-		if (bool(edgeTable[marchingCubesCase] & 16))
-			vertices[4] = interpolation(positions[4], positions[5], distances[indices[4]], distances[indices[5]]);
-		if (bool(edgeTable[marchingCubesCase] & 32))
-			vertices[5] = interpolation(positions[5], positions[6], distances[indices[5]], distances[indices[6]]);
-		if (bool(edgeTable[marchingCubesCase] & 64))
-			vertices[6] = interpolation(positions[6], positions[7], distances[indices[6]], distances[indices[7]]);
-		if (bool(edgeTable[marchingCubesCase] & 128))
-			vertices[7] = interpolation(positions[7], positions[4], distances[indices[7]], distances[indices[4]]);
-		if (bool(edgeTable[marchingCubesCase] & 256))
-			vertices[8] = interpolation(positions[0], positions[4], distances[indices[0]], distances[indices[4]]);
-		if (bool(edgeTable[marchingCubesCase] & 512))
-			vertices[9] = interpolation(positions[1], positions[5], distances[indices[1]], distances[indices[5]]);
-		if (bool(edgeTable[marchingCubesCase] & 1024))
-			vertices[10] = interpolation(positions[2], positions[6], distances[indices[2]], distances[indices[6]]);
-		if (bool(edgeTable[marchingCubesCase] & 2048))
-			vertices[11] = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
-
 		int offset = 0;
 
-		offset +=3;
-		for (int j = 0; triTable[marchingCubesCase + j * 256] != -1; j += 3)
+		//for (int j = 0; triTable[marchingCubesCase + j * 256] != -1; j += 3)
 		{
 			offset+=3;
 		}
-		verticesPerCell[id] = offset;
-		
+		verticesPerCell[id] = offset;		
 	}
 
 }
