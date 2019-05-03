@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 void initializeMarchingCubes(RenderData* data);
 
@@ -38,10 +39,12 @@ void render(const RenderData* data)
 	glPointSize(2.f);
 	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
 }
-#include <iostream>
 
 void update(RenderData* data, VoxelData* voxelData)
 {
+	for(int i = 0; i < 65 * 65 * 65; ++i)
+		data->marchingCubes.tempDistances[i] = int(voxelData->isosurface.distances[i]);
+
 	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(data->view));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(data->projection));
@@ -66,7 +69,7 @@ void update(RenderData* data, VoxelData* voxelData)
 	for (int i = 0; i < 64 * 64 * 64; ++i)
 	{
 		if(ptr[i] != 0)
-			std::cout << ptr[i] << '\n';
+			std::cout << ptr[0] << '\n';
 	}
 	
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);

@@ -45,10 +45,11 @@ layout(std140, binding = 6) buffer tables
 
 void main()
 {
-	int xMax = 64;
-	int yMax = 64;
-	unsigned int id = gl_GlobalInvocationID.x + (xMax * gl_GlobalInvocationID.y) + (xMax * yMax * gl_GlobalInvocationID.z);
-	
+	int xMax = 65;
+	int yMax = 65;
+
+	unsigned int id = gl_GlobalInvocationID.x + (64 * gl_GlobalInvocationID.y) + (64 * 64 * gl_GlobalInvocationID.z);
+
 	unsigned int indices[8];
 	indices[0] = 0 + id;
 	indices[1] = 1 + id;
@@ -68,7 +69,7 @@ void main()
 	int(distances[indices[2]] < 0) << 2 |
 	int(distances[indices[1]] < 0) << 1 |
 	int(distances[indices[0]] < 0) << 0;
-	
+
 	if(marchingCubesCase != 0 && marchingCubesCase != 255)
 	{
 		unsigned int x = id % xMax;
@@ -130,4 +131,5 @@ void main()
 		verticesPerCell[id] = offset;
 		
 	}
+
 }
