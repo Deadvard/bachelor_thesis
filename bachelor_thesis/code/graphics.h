@@ -16,6 +16,8 @@ struct MarchingCubes
 	unsigned int pt_vao, pt_vbo;
 	unsigned int numPoints;
 
+	unsigned int histoPyramidShader;
+
 	unsigned int computeShader;
 	int* tempDistances;
 	unsigned int inputBuffer;

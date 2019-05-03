@@ -67,11 +67,14 @@ void update(RenderData* data, VoxelData* voxelData)
 	GLint*ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 	
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+
 }
 
 void initializeMarchingCubes(RenderData * data)
 {
 	data->marchingCubes.computeShader = createShader("resources/shaders/compute_shader.comp");
+	data->marchingCubes.histoPyramidShader = createShader("resources/shaders/histopyramid_builder.comp");
 
 	glGenBuffers(1, &data->marchingCubes.tableBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.tableBuffer);
