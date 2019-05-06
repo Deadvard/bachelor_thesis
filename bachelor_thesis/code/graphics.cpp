@@ -123,16 +123,24 @@ void update(RenderData* data, VoxelData* voxelData)
 	bufferSize += bufferSize / 4;
 	bufferSize += 4;
 
-	GLint*ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-	for (int i = 0; i < bufferSize - 1; ++i)
+	static bool runOnce = false;
+	if (!runOnce)
 	{
-		if (ptr[i] != 0)
+		GLint*ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+		for (int i = 0; i < bufferSize; ++i)
 		{
-			std::cout << ptr[i] << '\n';
+			if (ptr[i] != 0)
+			{
+				std::cout << ptr[i] << '\n';
+			}
 		}
+
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+		runOnce = true;
 	}
 
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
 }
 
 void initializeMarchingCubes(RenderData * data)
