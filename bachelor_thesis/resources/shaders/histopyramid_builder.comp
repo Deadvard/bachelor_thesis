@@ -20,5 +20,11 @@ uniform int offset;
 
 void main()
 {
+	int id = gl_GlobalInvocationID.x * gl_GlobalInvocationID.y * gl_GlobalInvocationID.z + offset;
 
+	verticesPerCell[gl_NumWorkGroups.x * gl_NumWorkGroups.y * gl_NumWorkGroups.z + id]
+		= verticesPerCell[id] 
+		+ verticesPerCell[id + 1] 
+		+ verticesPerCell[id + 2] 
+		+ verticesPerCell[id + 3];
 }
