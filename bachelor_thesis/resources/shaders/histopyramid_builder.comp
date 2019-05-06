@@ -16,6 +16,8 @@ layout(std430, packed, binding = 5) buffer histoPyramid
 	int verticesPerCell[];
 };
 
+uniform int offset;
+
 void main()
 {
 
