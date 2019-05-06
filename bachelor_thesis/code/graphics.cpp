@@ -61,13 +61,11 @@ void update(RenderData* data, VoxelData* voxelData)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 
 	glDispatchCompute(8,8,8);
-	//glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	GLint*ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 	
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
-
 }
 
 void initializeMarchingCubes(RenderData * data)
