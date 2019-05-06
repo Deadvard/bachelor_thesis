@@ -89,5 +89,9 @@ void main()
 		}
 		verticesPerCell[id] = offset;		
 	}
+	else
+	{
+		verticesPerCell[id] = 0;
+	}
 
 }

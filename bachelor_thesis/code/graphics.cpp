@@ -65,6 +65,7 @@ void update(RenderData* data, VoxelData* voxelData)
 	glUseProgram(data->marchingCubes.histoPyramidShader);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 
+
 	int offset = 0;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(64, 64, 16);
@@ -108,7 +109,30 @@ void update(RenderData* data, VoxelData* voxelData)
 	offset += 4 * 4 * 1;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(1, 1, 1);
+
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	int bufferSize = 64 * 64 * 64;
+	bufferSize += bufferSize / 4;
+	bufferSize += bufferSize / 4;
+	bufferSize += bufferSize / 4;
+	bufferSize += bufferSize / 4;
+	bufferSize += bufferSize / 4;
+	bufferSize += bufferSize / 4;
+	bufferSize += bufferSize / 4;
+	bufferSize += bufferSize / 4;
+	bufferSize += 4;
+
+	GLint*ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+	for (int i = 0; i < bufferSize - 1; ++i)
+	{
+		if (ptr[i] != 0)
+		{
+			std::cout << ptr[i] << '\n';
+		}
+	}
+
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
 void initializeMarchingCubes(RenderData * data)
