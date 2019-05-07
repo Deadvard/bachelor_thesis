@@ -50,7 +50,6 @@ void update(RenderData* data, VoxelData* voxelData)
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(data->view));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(data->projection));
 
-
 	glUseProgram(data->marchingCubes.computeShader);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.tableBuffer);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 256, &edgeTable[0]);
@@ -62,6 +61,7 @@ void update(RenderData* data, VoxelData* voxelData)
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 
+
 	glUseProgram(data->marchingCubes.histoPyramidShader);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 
@@ -70,12 +70,14 @@ void update(RenderData* data, VoxelData* voxelData)
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(64, 64, 16);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
+
+
+
 	offset += 64 * 64 * 64;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(64, 16, 16);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
+
 	offset += 64 * 64 * 16;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(16, 16, 16);	
@@ -111,35 +113,10 @@ void update(RenderData* data, VoxelData* voxelData)
 	glDispatchCompute(1, 1, 1);
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-	int bufferSize = 64 * 64 * 64;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += 4;
-
-	static bool runOnce = false;
-	if (!runOnce)
-	{
-		GLint*ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-		for (int i = 0; i < bufferSize; ++i)
-		{
-			if (ptr[i] != 0)
-			{
-				std::cout << ptr[i] << '\n';
-			}
-		}
-
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
-		runOnce = true;
-	}
-
+	
+	//GLint*ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+	//std::cout << ptr[4] << '\n';
+	//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
 }
 
