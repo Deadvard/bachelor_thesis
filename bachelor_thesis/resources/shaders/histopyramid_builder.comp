@@ -12,8 +12,12 @@ layout(local_size_x = 1)in;
 
 layout(std430, packed, binding = 5) buffer histoPyramid
 {
-	DrawArraysIndirectCommand vertices;	
 	int verticesPerCell[];
+};
+
+layout(std430, packed, binding = 7) buffer indirectDraw
+{
+	DrawArraysIndirectCommand vertices;	
 };
 
 uniform int offset;

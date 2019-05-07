@@ -42,6 +42,7 @@ void render(const RenderData* data)
 	glUseProgram(data->marchingCubes.marchingCubesShader);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
+	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, data->marchingCubes.indirectBuffer);
 	uniform(data->pointShader, "model", glm::mat4(1.f));
 	uniform(data->pointShader, "view", data->view);
 	uniform(data->pointShader, "projection", data->projection);
@@ -70,6 +71,7 @@ void update(RenderData* data, VoxelData* voxelData)
 
 	glUseProgram(data->marchingCubes.histoPyramidShader);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.indirectBuffer);
 	int offset = 0;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(64, 64, 16);
@@ -142,11 +144,15 @@ void initializeMarchingCubes(RenderData * data)
 	bufferSize += 4 * 4 * 4;
 	bufferSize += 4 * 4 * 1;
 	bufferSize += 4 * 1 * 1;
-	bufferSize += 4;
 	bufferSize *= sizeof(int);
 
 	glGenBuffers(1, &data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, nullptr, GL_DYNAMIC_COPY);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, data->marchingCubes.outputBuffer);
+
+	glGenBuffers(1, &data->marchingCubes.indirectBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.indirectBuffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * 4, nullptr, GL_DYNAMIC_COPY);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, data->marchingCubes.outputBuffer);
 }

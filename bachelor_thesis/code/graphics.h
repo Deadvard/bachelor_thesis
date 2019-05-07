@@ -24,6 +24,7 @@ struct MarchingCubes
 	int* tempDistances;
 	unsigned int inputBuffer;
 	unsigned int outputBuffer;
+	unsigned int indirectBuffer;
 
 	unsigned int tableBuffer;
 

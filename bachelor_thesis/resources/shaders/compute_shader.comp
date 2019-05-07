@@ -1,13 +1,5 @@
 #version 430
 
-struct DrawArraysIndirectCommand
-{
-	uint count;
-	uint primCount;
-	uint first;
-	uint baseInstance;
-};
-
 vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
 {
 	float f1 = float(v1) / 1000.0;
@@ -42,7 +34,6 @@ layout(std430, binding = 4) buffer inBuffer
 
 layout(std430, packed, binding = 5) buffer histoPyramid
 {
-	DrawArraysIndirectCommand vertices;	
 	int verticesPerCell[];
 };
 
