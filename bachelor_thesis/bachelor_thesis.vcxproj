@@ -22,6 +22,7 @@
     <ClCompile Include="code\engine.cpp" />
     <ClCompile Include="code\graphics.cpp" />
     <ClCompile Include="code\main.cpp" />
+    <ClCompile Include="code\physics.cpp" />
     <ClCompile Include="code\shader.cpp" />
     <ClCompile Include="code\texture.cpp" />
     <ClCompile Include="code\voxel_grid.cpp" />
