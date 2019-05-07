@@ -63,6 +63,8 @@ void update(RenderData* data, VoxelData* voxelData)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.tableBuffer);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 256, &edgeTable[0]);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 256, sizeof(int) * 256 * 16, &triTable[0][0]);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 256 + sizeof(int) * 256 * 16, sizeof(int) * 256, &vertCountTable[0]);
+
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 65 * 65 * 65, &data->marchingCubes.tempDistances[0]);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
@@ -127,7 +129,7 @@ void initializeMarchingCubes(RenderData * data)
 
 	glGenBuffers(1, &data->marchingCubes.tableBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.tableBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 256 + sizeof(int) * 256 * 12, nullptr, GL_STATIC_DRAW);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 256 + sizeof(int) * 256 * 12 + sizeof(int) * 256, nullptr, GL_STATIC_DRAW);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, data->uniformBuffer);
 
 	glGenBuffers(1, &data->marchingCubes.inputBuffer);
