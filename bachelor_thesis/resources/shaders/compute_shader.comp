@@ -71,14 +71,5 @@ void main()
 	int(distances[indices[1]] < 0) << 1 |
 	int(distances[indices[0]] < 0) << 0;
 		
-	verticesPerCell[id] = 0;
-
-	if(marchingCubesCase != 0 && marchingCubesCase != 255)
-	{
-		//for (int j = 0; triTable[marchingCubesCase + j * 256] != -1; j += 3)
-		{
-			verticesPerCell[id] +=3;
-		}	
-	}
-
+	verticesPerCell[id] = vertCountTable[marchingCubesCase];
 }
