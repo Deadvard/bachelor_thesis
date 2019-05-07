@@ -224,10 +224,10 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 
 	renderData->marchingCubes.numPoints = points.size();
 
-	glGenVertexArrays(1, &renderData->marchingCubes.pt_vao);
-	glBindVertexArray(renderData->marchingCubes.pt_vao);
-	glGenBuffers(1, &renderData->marchingCubes.pt_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, renderData->marchingCubes.pt_vbo);
+	glGenVertexArrays(1, &renderData->marchingCubes.ptVao);
+	glBindVertexArray(renderData->marchingCubes.ptVao);
+	glGenBuffers(1, &renderData->marchingCubes.ptVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, renderData->marchingCubes.ptVbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(PosCol) * points.size(), &points[0], GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)0);

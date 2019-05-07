@@ -37,8 +37,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\compute_shader.comp" />
+    <None Include="resources\shaders\fragment_shader.fs" />
     <None Include="resources\shaders\point_shader.fs" />
     <None Include="resources\shaders\point_shader.vs" />
+    <None Include="resources\shaders\vertex_shader.vs" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

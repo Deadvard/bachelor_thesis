@@ -35,16 +35,24 @@ void render(const RenderData* data)
 	uniform(data->pointShader, "model", glm::mat4(1.f));
 	uniform(data->pointShader, "view", data->view);
 	uniform(data->pointShader, "projection", data->projection);
-	glBindVertexArray(data->marchingCubes.pt_vao);
+	glBindVertexArray(data->marchingCubes.ptVao);
 	glPointSize(2.f);
 	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
+
+	glUseProgram(data->marchingCubes.marchingCubesShader);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
+	uniform(data->pointShader, "model", glm::mat4(1.f));
+	uniform(data->pointShader, "view", data->view);
+	uniform(data->pointShader, "projection", data->projection);
+	glDrawArraysIndirect(GL_TRIANGLES, 0);
+
 }
 
 void update(RenderData* data, VoxelData* voxelData)
 {
 	for(int i = 0; i < 65 * 65 * 65; ++i)
 		data->marchingCubes.tempDistances[i] = int(voxelData->isosurface.distances[i]);
-
 
 	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(data->view));
@@ -60,18 +68,12 @@ void update(RenderData* data, VoxelData* voxelData)
 	glDispatchCompute(64,64,64);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-
-
 	glUseProgram(data->marchingCubes.histoPyramidShader);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
-
-
 	int offset = 0;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(64, 64, 16);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-
 
 	offset += 64 * 64 * 64;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
@@ -111,36 +113,13 @@ void update(RenderData* data, VoxelData* voxelData)
 	offset += 4 * 4 * 1;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(1, 1, 1);
-
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
-	int bufferSize = 64 * 64 * 64;
-	bufferSize += 64 * 64 * 16;
-	bufferSize += 64 * 16 * 16;
-	bufferSize += 16 * 16 * 16;
-	bufferSize += 16 * 16 *  4;
-	bufferSize += 16 *  4 *  4;
-	bufferSize +=  4 *  4 *  4;
-	bufferSize +=  4 *  4 *  1;
-	bufferSize +=  4 *  1 *  1;
-	bufferSize += 4;
-		
-	static bool runOnce = false;
-	if (!runOnce)
-	{
-		GLint* ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-		for (int i = 4; i < bufferSize; ++i)
-		{
-			if (ptr[i] != 0)
-				std::cout << i << " : " << ptr[i] << '\n';
-		}
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		runOnce = true;
-	}
+
 }
 
 void initializeMarchingCubes(RenderData * data)
 {
+	data->marchingCubes.marchingCubesShader = createShader("resources/shaders/vertex_shader.vs", "fragment_shader.fs");
 	data->marchingCubes.computeShader = createShader("resources/shaders/compute_shader.comp");
 	data->marchingCubes.histoPyramidShader = createShader("resources/shaders/histopyramid_builder.comp");
 

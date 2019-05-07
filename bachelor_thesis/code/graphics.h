@@ -13,8 +13,10 @@ struct MarchingCubes
 	unsigned int vao, vbo, ebo;
 	unsigned int numTriangles;
 
-	unsigned int pt_vao, pt_vbo;
+	unsigned int ptVao, ptVbo;
 	unsigned int numPoints;
+
+	unsigned int marchingCubesShader;
 
 	unsigned int histoPyramidShader;
 
