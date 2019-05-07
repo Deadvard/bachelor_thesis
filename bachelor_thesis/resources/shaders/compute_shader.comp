@@ -51,25 +51,15 @@ void main()
 
 	uint id = gl_GlobalInvocationID.x + (64 * gl_GlobalInvocationID.y) + (64 * 64 * gl_GlobalInvocationID.z);
 
-	uint indices[8];
-	indices[0] = 0 + id;
-	indices[1] = 1 + id;
-	indices[2] = 1 + id + xMax * yMax;
-	indices[3] = 0 + id + xMax * yMax;
-	indices[4] = 0 + id + xMax;
-	indices[5] = 1 + id + xMax;
-	indices[6] = 1 + id + xMax + xMax * yMax;
-	indices[7] = 0 + id + xMax + xMax * yMax;
-
-	uint marchingCubesCase =
-	int(distances[indices[7]] < 0) << 7 |
-	int(distances[indices[6]] < 0) << 6 |
-	int(distances[indices[5]] < 0) << 5 |
-	int(distances[indices[4]] < 0) << 4 |
-	int(distances[indices[3]] < 0) << 3 |
-	int(distances[indices[2]] < 0) << 2 |
-	int(distances[indices[1]] < 0) << 1 |
-	int(distances[indices[0]] < 0) << 0;
+	uint caseCode =
+	int(distances[0 + id                     ] < 0) << 0 |
+	int(distances[1 + id                     ] < 0) << 1 |
+	int(distances[1 + id + xMax * yMax       ] < 0) << 2 |
+	int(distances[0 + id + xMax * yMax       ] < 0) << 3 |
+	int(distances[0 + id + xMax              ] < 0) << 4 |
+	int(distances[1 + id + xMax              ] < 0) << 5 |
+	int(distances[1 + id + xMax + xMax * yMax] < 0) << 6 |
+	int(distances[0 + id + xMax + xMax * yMax] < 0) << 7;
 		
-	verticesPerCell[id] = vertCountTable[marchingCubesCase];
+	verticesPerCell[id] = vertCountTable[caseCode];
 }
