@@ -21,24 +21,29 @@ uniform int offset;
 void main()
 {
 
-	uint id = (gl_GlobalInvocationID.x * gl_GlobalInvocationID.y * gl_GlobalInvocationID.z * 4) + offset;
+	uint id 
+		= (gl_GlobalInvocationID.x 
+		+ (gl_NumWorkGroups.x * gl_GlobalInvocationID.y) 
+		+ (gl_NumWorkGroups.x * gl_NumWorkGroups.y * gl_GlobalInvocationID.z));
+	
+	uint idIn = id * 4 + offset;
 
 	if (gl_NumWorkGroups.x * gl_NumWorkGroups.y * gl_NumWorkGroups.z == 1)
 	{
 		vertices.count
-			= verticesPerCell[id] 
-			+ verticesPerCell[id + 1] 
-			+ verticesPerCell[id + 2] 
-			+ verticesPerCell[id + 3];
+			= verticesPerCell[idIn] 
+			+ verticesPerCell[idIn + 1] 
+			+ verticesPerCell[idIn + 2] 
+			+ verticesPerCell[idIn + 3];
 
 		vertices.primCount = vertices.count / 3;
 	}
 	else
 	{
-		verticesPerCell[(gl_NumWorkGroups.x * gl_NumWorkGroups.y * gl_NumWorkGroups.z * 4) + id]
-			= verticesPerCell[id] 
-			+ verticesPerCell[id + 1] 
-			+ verticesPerCell[id + 2] 
-			+ verticesPerCell[id + 3];
+		verticesPerCell[(gl_NumWorkGroups.x * gl_NumWorkGroups.y * gl_NumWorkGroups.z * 4) + id + offset]
+			= verticesPerCell[idIn] 
+			+ verticesPerCell[idIn + 1] 
+			+ verticesPerCell[idIn + 2] 
+			+ verticesPerCell[idIn + 3];
 	}
 }
