@@ -25,13 +25,12 @@ void initalize(RenderData* data)
 
 void render(const RenderData* data)
 {
-	/*
 	glUseProgram(data->primaryShader);
 	uniform(data->primaryShader, "view", data->view);
 	uniform(data->primaryShader, "projection", data->projection);
 	glBindVertexArray(data->marchingCubes.vao);
 	glDrawArrays(GL_TRIANGLES, 0, data->marchingCubes.numTriangles * 3);
-	*/
+	
 	glUseProgram(data->pointShader);
 	uniform(data->pointShader, "model", glm::mat4(1.f));
 	uniform(data->pointShader, "view", data->view);

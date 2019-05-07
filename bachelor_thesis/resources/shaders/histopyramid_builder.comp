@@ -41,6 +41,8 @@ void main()
 			+ verticesPerCell[idIn + 3];
 
 		vertices.primCount = vertices.count / 3;
+		vertices.first = 0;
+		vertices.baseInstance = 0;
 	}
 	else
 	{
