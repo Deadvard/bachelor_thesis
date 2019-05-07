@@ -1,6 +1,6 @@
 #include <glm/glm.hpp>
 
-
+/*
 float sqDistPointSegment(glm::vec3 a, glm::vec3 b, glm::vec3 c)
 {
 	glm::vec3 ab = b - a;
@@ -37,3 +37,4 @@ float closestPtSegmentSegment(
 		
 	}
 }
+*/
