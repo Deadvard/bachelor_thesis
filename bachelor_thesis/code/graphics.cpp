@@ -114,10 +114,29 @@ void update(RenderData* data, VoxelData* voxelData)
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	
-	//GLint*ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-	//std::cout << ptr[4] << '\n';
-	//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
+	int bufferSize = 64 * 64 * 64;
+	bufferSize += 64 * 64 * 16;
+	bufferSize += 64 * 16 * 16;
+	bufferSize += 16 * 16 * 16;
+	bufferSize += 16 * 16 *  4;
+	bufferSize += 16 *  4 *  4;
+	bufferSize +=  4 *  4 *  4;
+	bufferSize +=  4 *  4 *  1;
+	bufferSize +=  4 *  1 *  1;
+	bufferSize += 4;
+		
+	static bool runOnce = false;
+	if (!runOnce)
+	{
+		GLint* ptr = (GLint*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+		for (int i = 4; i < bufferSize; ++i)
+		{
+			if (ptr[i] != 0)
+				std::cout << i << " : " << ptr[i] << '\n';
+		}
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		runOnce = true;
+	}
 }
 
 void initializeMarchingCubes(RenderData * data)
@@ -135,16 +154,17 @@ void initializeMarchingCubes(RenderData * data)
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 65 * 65 * 65, nullptr, GL_STATIC_READ);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, data->marchingCubes.inputBuffer);
 
-	int bufferSize = sizeof(int) * 64 * 64 * 64;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += bufferSize / 4;
-	bufferSize += sizeof(GLuint) * 4;
+	int bufferSize = 64 * 64 * 64;
+	bufferSize += 64 * 64 * 16;
+	bufferSize += 64 * 16 * 16;
+	bufferSize += 16 * 16 * 16;
+	bufferSize += 16 * 16 * 4;
+	bufferSize += 16 * 4 * 4;
+	bufferSize += 4 * 4 * 4;
+	bufferSize += 4 * 4 * 1;
+	bufferSize += 4 * 1 * 1;
+	bufferSize += 4;
+	bufferSize *= sizeof(int);
 
 	glGenBuffers(1, &data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
