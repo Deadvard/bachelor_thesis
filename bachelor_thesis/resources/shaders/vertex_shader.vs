@@ -13,24 +13,21 @@ layout(std430, packed, binding = 5) buffer histoPyramid
 void main()
 {
 	uint id = gl_VertexID;
+	uint layerSize = 4;
+	uint pos = 0;
+	uint div = 0;
 
-	uint startingOffset = 349520;
-
-	int temp = verticesPerCell[id];
-
-	for(int i = 0; i < 8; ++i)
-	{
-		for(int j = 0; j < 4; ++j)
+	for(uint offset = 349520; offset > 0; offset -= layerSize)
+	{			
+		int cellId = 0;
+		for(int i = 0; i < 3 && id > cellId; ++i)
 		{
-			if(id > temp)
-			{
-				id -= temp;
-			}
-			else
-			{
-				break;
-			}
+			cellId = verticesPerCell[pos + offset + i];
+			id -= cellId;
+			div = i + 1;
 		}
-	}
 
+		layerSize *= 4;
+		pos = layerSize / div;
+	}
 }
