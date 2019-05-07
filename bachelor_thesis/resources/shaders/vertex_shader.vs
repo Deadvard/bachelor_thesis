@@ -30,4 +30,7 @@ void main()
 		layerSize *= 4;
 		pos = layerSize / div;
 	}
+
+
+
 }
