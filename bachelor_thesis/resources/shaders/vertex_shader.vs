@@ -103,7 +103,7 @@ void main()
 	positions[6] = vec3(fx + offset, fy + offset, fz + offset);
 	positions[7] = vec3(fx, fy + offset, fz + offset);
 
-	int edgeIndex = triTable[caseCode][id];
+	int edgeIndex = triTable[caseCode + id * 16];
 	vec3 vertex;
 
 	if (edgeIndex == 0)

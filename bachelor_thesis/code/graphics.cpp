@@ -44,7 +44,9 @@ void render(const RenderData* data)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, data->marchingCubes.indirectBuffer);
-	uniform(data->pointShader, "model", glm::mat4(1.f));
+	static glm::mat4 model(1.f);
+	model[3] = glm::vec4(6.4, 0,0,1);
+	uniform(data->pointShader, "model", model);
 	uniform(data->pointShader, "view", data->view);
 	uniform(data->pointShader, "projection", data->projection);
 	glDrawArraysIndirect(GL_TRIANGLES, 0);
