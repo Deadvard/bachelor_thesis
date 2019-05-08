@@ -84,7 +84,7 @@ void run()
 				camera.cursor.y = 0.0;
 			}
 
-			renderData.view = cameraView(&camera);				
+			renderData.view = cameraView(&camera);
 			deltaTime -= timestep;
 			update(&renderData, &voxelData);
 		}

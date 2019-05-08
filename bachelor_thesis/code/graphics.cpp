@@ -40,25 +40,16 @@ void render(const RenderData* data)
 	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
 
 	glUseProgram(data->marchingCubes.marchingCubesShader);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.tableBuffer);
-
-	int* ptr = (int*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-
-	for(int i = 0; i < 256; ++i)
-		std::cout << ptr[i] << '\n';
-
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.triTableBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, data->marchingCubes.indirectBuffer);
 	static glm::mat4 model(1.f);
-	model[3] = glm::vec4(6.4, 0,0,1);
+	model[3] = glm::vec4(6.4, 0, 0, 1);
 	uniform(data->pointShader, "model", model);
 	uniform(data->pointShader, "view", data->view);
 	uniform(data->pointShader, "projection", data->projection);
 	glDrawArraysIndirect(GL_TRIANGLES, 0);
-
 }
 
 void update(RenderData* data, VoxelData* voxelData)
@@ -72,16 +63,13 @@ void update(RenderData* data, VoxelData* voxelData)
 
 	glUseProgram(data->marchingCubes.computeShader);
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.tableBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 256 * 16, &gpuTriTable[0]);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 256 * 16, sizeof(int) * 256, &vertCountTable[0]);
-
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.vertTableBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 65 * 65 * 65, &data->marchingCubes.tempDistances[0]);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glDispatchCompute(64,64,64);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
+	
 	glUseProgram(data->marchingCubes.histoPyramidShader);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.indirectBuffer);
@@ -138,14 +126,21 @@ void initializeMarchingCubes(RenderData * data)
 	data->marchingCubes.computeShader = createShader("resources/shaders/compute_shader.comp");
 	data->marchingCubes.histoPyramidShader = createShader("resources/shaders/histopyramid_builder.comp");
 
-	glGenBuffers(1, &data->marchingCubes.tableBuffer);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.tableBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 256 * 16 + sizeof(int) * 256, nullptr, GL_STATIC_READ);
+	glGenBuffers(1, &data->marchingCubes.triTableBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.triTableBuffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 256 * 16, nullptr, GL_STATIC_READ);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 256 * 16, &gpuTriTable[0]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, data->marchingCubes.tableBuffer);
+
+	glGenBuffers(1, &data->marchingCubes.vertTableBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.vertTableBuffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 256 * 16, nullptr, GL_STATIC_READ);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 256, &vertCountTable[0]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, data->marchingCubes.vertTableBuffer);
 
 	glGenBuffers(1, &data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 65 * 65 * 65, nullptr, GL_STATIC_READ);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 65 * 65 * 65, nullptr, GL_DYNAMIC_COPY);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, data->marchingCubes.inputBuffer);
 
 	int bufferSize = 64 * 64 * 64;

@@ -28,6 +28,9 @@ struct MarchingCubes
 
 	unsigned int tableBuffer;
 
+	unsigned int triTableBuffer;
+	unsigned int vertTableBuffer;
+
 
 };
 

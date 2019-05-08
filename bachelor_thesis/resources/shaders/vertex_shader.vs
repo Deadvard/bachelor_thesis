@@ -5,15 +5,14 @@ layout(std430, binding = 4) buffer inBuffer
 	int distances[];
 };
 
-layout(std430, packed, binding = 5) buffer histoPyramid
+layout(std430, binding = 5) buffer histoPyramid
 {
 	int verticesPerCell[];
 };
 
-layout(std140, binding = 6) buffer tables
+layout(std430, binding = 6) buffer table
 {
 	int triTable[256 * 16];
-	int vertCountTable[256];
 };
 
 vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
