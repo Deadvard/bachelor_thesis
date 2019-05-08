@@ -12,7 +12,6 @@ layout(std430, packed, binding = 5) buffer histoPyramid
 
 layout(std140, binding = 6) buffer tables
 {
-	int edgeTable[256];
 	int triTable[256 * 16];
 	int vertCountTable[256];
 };
