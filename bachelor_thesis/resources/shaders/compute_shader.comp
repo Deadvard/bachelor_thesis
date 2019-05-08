@@ -12,7 +12,7 @@ layout(std430, packed, binding = 5) buffer histoPyramid
 	int verticesPerCell[];
 };
 
-layout(std140, binding = 6) buffer tables
+layout(std430, binding = 6) buffer tables
 {
 	int triTable[256 * 16];
 	int vertCountTable[256];
