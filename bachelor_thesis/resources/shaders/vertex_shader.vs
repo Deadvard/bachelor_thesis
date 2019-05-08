@@ -10,6 +10,13 @@ layout(std430, packed, binding = 5) buffer histoPyramid
 	int verticesPerCell[];
 };
 
+layout(std140, binding = 6) buffer tables
+{
+	int edgeTable[256];
+	int triTable[256 * 16];
+	int vertCountTable[256];
+};
+
 vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
 {
 	float f1 = float(v1) / 1000.0;
@@ -121,7 +128,7 @@ void main()
 		vertex = interpolation(positions[1], positions[5], distances[indices[1]], distances[indices[5]]);
 	if (edgeIndex == 10)
 		vertex = interpolation(positions[2], positions[6], distances[indices[2]], distances[indices[6]]);
-	if (id == 11)
+	if (edgeIndex == 11)
 		vertex = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
 
 	gl_Position = vec4(vertex, 1.0);

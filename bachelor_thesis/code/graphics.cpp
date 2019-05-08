@@ -40,6 +40,7 @@ void render(const RenderData* data)
 	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
 
 	glUseProgram(data->marchingCubes.marchingCubesShader);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.tableBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, data->marchingCubes.indirectBuffer);
