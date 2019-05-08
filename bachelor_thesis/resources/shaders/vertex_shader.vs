@@ -15,6 +15,14 @@ layout(std430, binding = 6) buffer table
 	int triTable[256 * 16];
 };
 
+layout(std140, binding = 0) uniform matrices
+{
+	uniform mat4 view;
+	uniform mat4 projection;
+};
+
+uniform mat4 model;
+
 vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
 {
 	float f1 = float(v1) / 1000.0;
@@ -129,5 +137,5 @@ void main()
 	if (edgeIndex == 11)
 		vertex = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
 
-	gl_Position = vec4(vertex, 1.0);
+	gl_Position = projection * view * model * vec4(1,0,0, 1.0);
 }
