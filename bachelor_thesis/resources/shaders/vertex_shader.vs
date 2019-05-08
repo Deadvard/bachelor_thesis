@@ -137,5 +137,5 @@ void main()
 	if (edgeIndex == 11)
 		vertex = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
 
-	gl_Position = projection * view * model * vec4(1,0,0, 1.0);
+	gl_Position = projection * view * model * vec4(vertex, 1.0);
 }
