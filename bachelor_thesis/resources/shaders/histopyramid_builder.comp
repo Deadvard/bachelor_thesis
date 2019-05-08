@@ -40,7 +40,7 @@ void main()
 			+ verticesPerCell[idIn + 2] 
 			+ verticesPerCell[idIn + 3];
 
-		vertices.primCount = vertices.count / 3;
+		vertices.primCount = 1;
 		vertices.first = 0;
 		vertices.baseInstance = 0;
 	}

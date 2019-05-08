@@ -162,5 +162,5 @@ void initializeMarchingCubes(RenderData * data)
 	glGenBuffers(1, &data->marchingCubes.indirectBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.indirectBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * 4, nullptr, GL_DYNAMIC_COPY);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, data->marchingCubes.outputBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, data->marchingCubes.indirectBuffer);
 }
