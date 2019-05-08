@@ -2,6 +2,11 @@
 
 layout (local_size_x = 1) in;
 
+layout(std430, binding = 2) buffer vertTable
+{
+	int vertCountTable[];
+};
+
 layout(std430, binding = 3) buffer inBuffer
 {
 	int distances[]; // 65 * 65 * 65
@@ -12,10 +17,6 @@ layout(std430, binding = 4) buffer histoPyramid
 	int verticesPerCell[];
 };
 
-layout(std430, binding = 2) buffer vertTable
-{
-	int vertCountTable[];
-};
 
 void main()
 {

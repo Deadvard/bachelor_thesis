@@ -1,5 +1,16 @@
 #version 430
 
+layout(std140, binding = 0) uniform matrices
+{
+	uniform mat4 view;
+	uniform mat4 projection;
+};
+
+layout(std430, binding = 1) buffer table
+{
+	int triTable[256 * 16];
+};
+
 layout(std430, binding = 3) buffer inBuffer
 {
 	int distances[];
@@ -8,17 +19,6 @@ layout(std430, binding = 3) buffer inBuffer
 layout(std430, binding = 4) buffer histoPyramid
 {
 	int verticesPerCell[];
-};
-
-layout(std430, binding = 1) buffer table
-{
-	int triTable[256 * 16];
-};
-
-layout(std140, binding = 0) uniform matrices
-{
-	uniform mat4 view;
-	uniform mat4 projection;
 };
 
 uniform mat4 model;
