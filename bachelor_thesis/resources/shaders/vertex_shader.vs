@@ -59,21 +59,70 @@ void main()
 	int xMax = 65;
 	int yMax = 65;
 
+	uint indices[8];
+	indices[0] = 0 + pos;
+	indices[1] = 1 + pos;
+	indices[2] = 1 + pos + xMax * yMax;       
+	indices[3] = 0 + pos + xMax * yMax;       
+	indices[4] = 0 + pos + xMax;             
+	indices[5] = 1 + pos + xMax;              
+	indices[6] = 1 + pos + xMax + xMax * yMax;
+	indices[7] = 0 + pos + xMax + xMax * yMax;
+
 	uint caseCode =
-	int(distances[0 + id                     ] < 0) << 0 |
-	int(distances[1 + id                     ] < 0) << 1 |
-	int(distances[1 + id + xMax * yMax       ] < 0) << 2 |
-	int(distances[0 + id + xMax * yMax       ] < 0) << 3 |
-	int(distances[0 + id + xMax              ] < 0) << 4 |
-	int(distances[1 + id + xMax              ] < 0) << 5 |
-	int(distances[1 + id + xMax + xMax * yMax] < 0) << 6 |
-	int(distances[0 + id + xMax + xMax * yMax] < 0) << 7;
+		int(distances[indices[7]] < 0) << 7 |
+		int(distances[indices[6]] < 0) << 6 |
+		int(distances[indices[5]] < 0) << 5 |
+		int(distances[indices[4]] < 0) << 4 |
+		int(distances[indices[3]] < 0) << 3 |
+		int(distances[indices[2]] < 0) << 2 |
+		int(distances[indices[1]] < 0) << 1 |
+		int(distances[indices[0]] < 0) << 0;
 
-	vec3 vertices[12];
-	if(edgeTable[pos]&1)
-	{
-		vertices[0] = interpolation(positions[0], positions[1], distances[indices[0]], distances[indices[1]]);
-	}
+	float offset = 0.1;
+	float fx = (pos % xMax) * offset;
+	float fy = ((pos / xMax) % yMax) * offset;
+	float fz = (pos / (xMax * yMax)) * offset;
+	
+	vec3 positions[8];
 
+	positions[0] = vec3(fx, fy, fz);
+	positions[1] = vec3(fx + offset, fy, fz);
+	positions[2] = vec3(fx + offset, fy, fz + offset);
+	positions[3] = vec3(fx, fy, fz + offset);
+						 
+	positions[4] = vec3(fx, fy + offset, fz);
+	positions[5] = vec3(fx + offset, fy + offset, fz);
+	positions[6] = vec3(fx + offset, fy + offset, fz + offset);
+	positions[7] = vec3(fx, fy + offset, fz + offset);
 
+	int edgeIndex = triTable[caseCode][id];
+	vec3 vertex;
+
+	if (edgeIndex == 0)
+		vertex = interpolation(positions[0], positions[1], distances[indices[0]], distances[indices[1]]);
+	if (edgeIndex == 1)
+		vertex = interpolation(positions[1], positions[2], distances[indices[1]], distances[indices[2]]);
+	if (edgeIndex == 2)
+		vertex = interpolation(positions[2], positions[3], distances[indices[2]], distances[indices[3]]);
+	if (edgeIndex == 3)
+		vertex = interpolation(positions[3], positions[0], distances[indices[3]], distances[indices[0]]);
+	if (edgeIndex == 4)
+		vertex = interpolation(positions[4], positions[5], distances[indices[4]], distances[indices[5]]);
+	if (edgeIndex == 5)
+		vertex = interpolation(positions[5], positions[6], distances[indices[5]], distances[indices[6]]);
+	if (edgeIndex == 6)
+		vertex = interpolation(positions[6], positions[7], distances[indices[6]], distances[indices[7]]);
+	if (edgeIndex == 7)
+		vertex = interpolation(positions[7], positions[4], distances[indices[7]], distances[indices[4]]);
+	if (edgeIndex == 8)
+		vertex = interpolation(positions[0], positions[4], distances[indices[0]], distances[indices[4]]);
+	if (edgeIndex == 9)
+		vertex = interpolation(positions[1], positions[5], distances[indices[1]], distances[indices[5]]);
+	if (edgeIndex == 10)
+		vertex = interpolation(positions[2], positions[6], distances[indices[2]], distances[indices[6]]);
+	if (id == 11)
+		vertex = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
+
+	gl_Position = vec4(vertex, 1.0);
 }
