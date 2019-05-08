@@ -1,16 +1,16 @@
 #version 430
 
-layout(std430, binding = 4) buffer inBuffer
+layout(std430, binding = 3) buffer inBuffer
 {
 	int distances[];
 };
 
-layout(std430, binding = 5) buffer histoPyramid
+layout(std430, binding = 4) buffer histoPyramid
 {
 	int verticesPerCell[];
 };
 
-layout(std430, binding = 6) buffer table
+layout(std430, binding = 1) buffer table
 {
 	int triTable[256 * 16];
 };
@@ -51,23 +51,29 @@ vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
 void main()
 {
 	uint id = gl_VertexID;
-	uint layerSize = 4;
-	uint pos = 0;
-	uint div = 0;
+    uint pos = 349520;
+    uint layerSize = 16;
+    uint temp;
 
-	for(uint offset = 349520; offset > 0; offset -= layerSize)
-	{			
-		int cellId = 0;
-		for(int i = 0; i < 3 && id > cellId; ++i)
-		{
-			cellId = verticesPerCell[pos + offset + i];
-			id -= cellId;
-			div = i + 1;
-		}
-
-		layerSize *= 4;
-		pos = layerSize / div;
-	}
+    for(int i = 0; i < 8; ++i)
+    {
+        for(int j = 0; j < 4; ++j)
+        {
+            if(id > verticesPerCell[pos])
+            {
+                id -= verticesPerCell[pos++];
+            }
+            else
+            {
+                temp = j;
+                break;
+            }
+        }
+        pos -= temp;
+        pos -= layerSize;
+        pos += temp * 4;
+        layerSize *= 4;
+    }
 
 	int xMax = 65;
 	int yMax = 65;
@@ -98,82 +104,44 @@ void main()
 	float fz = (pos / (xMax * yMax)) * offset;
 	
 	vec3 positions[8];
-	int edgeIndex = triTable[caseCode + id * 16];
+
+	positions[0] = vec3(fx, fy, fz);
+	positions[1] = vec3(fx + offset, fy, fz);
+	positions[2] = vec3(fx + offset, fy, fz + offset);
+	positions[3] = vec3(fx, fy, fz + offset);
+						 
+	positions[4] = vec3(fx, fy + offset, fz);
+	positions[5] = vec3(fx + offset, fy + offset, fz);
+	positions[6] = vec3(fx + offset, fy + offset, fz + offset);
+	positions[7] = vec3(fx, fy + offset, fz + offset);
+
+	int edgeIndex = triTable[id + caseCode * 16];
 	vec3 vertex;
 
 	if (edgeIndex == 0)
-	{
-		positions[0] = vec3(fx, fy, fz);
-		positions[1] = vec3(fx + offset, fy, fz);
 		vertex = interpolation(positions[0], positions[1], distances[indices[0]], distances[indices[1]]);
-	}		
-	else if (edgeIndex == 1)
-	{
-		positions[1] = vec3(fx + offset, fy, fz);
-		positions[2] = vec3(fx + offset, fy, fz + offset);
+	if (edgeIndex == 1)
 		vertex = interpolation(positions[1], positions[2], distances[indices[1]], distances[indices[2]]);
-	}		
-	else if (edgeIndex == 2)
-	{
-		positions[2] = vec3(fx + offset, fy, fz + offset);
-		positions[3] = vec3(fx, fy, fz + offset);
+	if (edgeIndex == 2)
 		vertex = interpolation(positions[2], positions[3], distances[indices[2]], distances[indices[3]]);
-	}	
-	else if (edgeIndex == 3)
-	{
-		positions[0] = vec3(fx, fy, fz);
-		positions[3] = vec3(fx, fy, fz + offset);
+	if (edgeIndex == 3)
 		vertex = interpolation(positions[3], positions[0], distances[indices[3]], distances[indices[0]]);
-	}		
-	else if (edgeIndex == 4)
-	{
-		positions[4] = vec3(fx, fy + offset, fz);
-		positions[5] = vec3(fx + offset, fy + offset, fz);
+	if (edgeIndex == 4)
 		vertex = interpolation(positions[4], positions[5], distances[indices[4]], distances[indices[5]]);
-	}		
-	else if (edgeIndex == 5)
-	{
-		positions[5] = vec3(fx + offset, fy + offset, fz);
-		positions[6] = vec3(fx + offset, fy + offset, fz + offset);
+	if (edgeIndex == 5)
 		vertex = interpolation(positions[5], positions[6], distances[indices[5]], distances[indices[6]]);
-	}		
-	else if (edgeIndex == 6)
-	{
-		positions[6] = vec3(fx + offset, fy + offset, fz + offset);
-		positions[7] = vec3(fx, fy + offset, fz + offset);
+	if (edgeIndex == 6)
 		vertex = interpolation(positions[6], positions[7], distances[indices[6]], distances[indices[7]]);
-	}		
-	else if (edgeIndex == 7)
-	{
-		positions[4] = vec3(fx, fy + offset, fz);
-		positions[7] = vec3(fx, fy + offset, fz + offset);
+	if (edgeIndex == 7)
 		vertex = interpolation(positions[7], positions[4], distances[indices[7]], distances[indices[4]]);
-	}		
-	else if (edgeIndex == 8)
-	{
-		positions[0] = vec3(fx, fy, fz);
-		positions[4] = vec3(fx, fy + offset, fz);
+	if (edgeIndex == 8)
 		vertex = interpolation(positions[0], positions[4], distances[indices[0]], distances[indices[4]]);
-	}		
-	else if (edgeIndex == 9)
-	{
-		positions[1] = vec3(fx + offset, fy, fz);
-		positions[5] = vec3(fx + offset, fy + offset, fz);
+	if (edgeIndex == 9)
 		vertex = interpolation(positions[1], positions[5], distances[indices[1]], distances[indices[5]]);
-	}		
-	else if (edgeIndex == 10)
-	{
-		positions[2] = vec3(fx + offset, fy, fz + offset);
-		positions[6] = vec3(fx + offset, fy + offset, fz + offset);
+	if (edgeIndex == 10)
 		vertex = interpolation(positions[2], positions[6], distances[indices[2]], distances[indices[6]]);
-	}		
-	else if (edgeIndex == 11)
-	{
-		positions[3] = vec3(fx, fy, fz + offset);
-		positions[7] = vec3(fx, fy + offset, fz + offset);
+	if (edgeIndex == 11)
 		vertex = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
-	}
-		
 
 	gl_Position = projection * view * model * vec4(vertex, 1.0);
 }

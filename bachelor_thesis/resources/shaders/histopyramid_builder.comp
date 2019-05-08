@@ -10,12 +10,12 @@ struct DrawArraysIndirectCommand
 
 layout(local_size_x = 1)in;
 
-layout(std430, binding = 5) buffer histoPyramid
+layout(std430, binding = 4) buffer histoPyramid
 {
 	int verticesPerCell[];
 };
 
-layout(std430, packed, binding = 7) buffer indirectDraw
+layout(std430, packed, binding = 5) buffer indirectDraw
 {
 	DrawArraysIndirectCommand vertices;	
 };
