@@ -26,20 +26,20 @@ void initalize(RenderData* data)
 void render(const RenderData* data)
 {
 	glUseProgram(data->primaryShader);
-	uniform(data->primaryShader, "view", data->view);
-	uniform(data->primaryShader, "projection", data->projection);
+	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBindVertexArray(data->marchingCubes.vao);
 	glDrawArrays(GL_TRIANGLES, 0, data->marchingCubes.numTriangles * 3);
-	
-	glUseProgram(data->pointShader);
-	uniform(data->pointShader, "model", glm::mat4(1.f));
-	uniform(data->pointShader, "view", data->view);
-	uniform(data->pointShader, "projection", data->projection);
-	glBindVertexArray(data->marchingCubes.ptVao);
-	glPointSize(2.f);
-	glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
+	glUseProgram(0);
+	//glUseProgram(data->pointShader);
+	//uniform(data->pointShader, "model", glm::mat4(1.f));
+	//uniform(data->pointShader, "view", data->view);
+	//uniform(data->pointShader, "projection", data->projection);
+	//glBindVertexArray(data->marchingCubes.ptVao);
+	//glPointSize(2.f);
+	//glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
 
 	glUseProgram(data->marchingCubes.marchingCubesShader);
+	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.triTableBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
@@ -47,8 +47,6 @@ void render(const RenderData* data)
 	static glm::mat4 model(1.f);
 	model[3] = glm::vec4(6.4, 0, 0, 1);
 	uniform(data->pointShader, "model", model);
-	uniform(data->pointShader, "view", data->view);
-	uniform(data->pointShader, "projection", data->projection);
 	glDrawArraysIndirect(GL_TRIANGLES, 0);
 }
 

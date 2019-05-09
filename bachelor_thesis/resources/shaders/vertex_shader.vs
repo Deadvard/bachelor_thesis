@@ -71,7 +71,7 @@ void main()
         }
         pos -= temp;
         pos -= layerSize;
-        pos += temp * 4;
+        pos += temp * (layerSize / 4);
         layerSize *= 4;
     }
 
@@ -180,5 +180,5 @@ void main()
 		vertex = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
 	}
 
-	gl_Position = projection * view * model * vec4(vertex, 1.0);
+	gl_Position = projection * view * vec4(vertex, 1.0);
 }
