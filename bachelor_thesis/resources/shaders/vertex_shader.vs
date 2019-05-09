@@ -51,32 +51,28 @@ vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
 void main()
 {
 	uint id = gl_VertexID;
-    uint pos = 349520;
-    uint layerSize = 16;
-    uint temp;
+    uint pos = 1;
+    uint layerSize = 4;
 
-    for(int i = 0; i < 8; ++i)
-    {
-		uint start = pos;
-		
-        for(int j = 0; j < 4; ++j)
-        {
-            if(id > verticesPerCell[pos])
-            {
-                id -= verticesPerCell[pos++];
-            }
-            else
-            {
-                temp = j;
-                break;
-            }
-        }
-		uint difference = pos - start;
-        pos -= temp;
-        pos -= layerSize;
-        pos += difference * (layerSize / 4);
-        layerSize *= 4;
-    }
+	for(uint offset = 349520; offset > 0;)
+	{			
+		for(int i = 0; i < 4; ++i)
+		{
+			int cellId = verticesPerCell[pos + offset + i];
+			if (id > cellId)
+			{
+				id -= cellId;
+			}
+			else
+			{
+				pos *= (i + 1);
+				break;
+			}
+			
+		}
+		layerSize *= 4;	
+		offset -= layerSize;
+	}
 
 	int xMax = 65;
 	int yMax = 65;

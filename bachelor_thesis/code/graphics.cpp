@@ -29,7 +29,7 @@ void render(const RenderData* data)
 	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBindVertexArray(data->marchingCubes.vao);
 	glDrawArrays(GL_TRIANGLES, 0, data->marchingCubes.numTriangles * 3);
-	glUseProgram(0);
+	
 	//glUseProgram(data->pointShader);
 	//uniform(data->pointShader, "model", glm::mat4(1.f));
 	//uniform(data->pointShader, "view", data->view);
@@ -37,16 +37,16 @@ void render(const RenderData* data)
 	//glBindVertexArray(data->marchingCubes.ptVao);
 	//glPointSize(2.f);
 	//glDrawArrays(GL_POINTS, 0, data->marchingCubes.numPoints);
-
+	
 	glUseProgram(data->marchingCubes.marchingCubesShader);
 	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.triTableBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, data->marchingCubes.indirectBuffer);
-	static glm::mat4 model(1.f);
+	glm::mat4 model(1.f);
 	model[3] = glm::vec4(6.4, 0, 0, 1);
-	uniform(data->pointShader, "model", model);
+	uniform(data->marchingCubes.marchingCubesShader, "model", model);
 	glDrawArraysIndirect(GL_TRIANGLES, 0);
 }
 
@@ -114,8 +114,7 @@ void update(RenderData* data, VoxelData* voxelData)
 	offset += 4 * 4 * 1;
 	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
 	glDispatchCompute(1, 1, 1);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT);
 }
 
 void initializeMarchingCubes(RenderData * data)
