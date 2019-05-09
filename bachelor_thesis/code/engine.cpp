@@ -270,7 +270,7 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 			indices[5] = 1 + i + size.x;
 			indices[6] = 1 + i + size.x + size.x * size.y;
 			indices[7] = 0 + i + size.x + size.x * size.y;
-						
+
 			unsigned int marchingCubesCase =
 				(distances[indices[7]] < 0) << 7 |
 				(distances[indices[6]] < 0) << 6 |

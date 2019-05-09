@@ -57,6 +57,8 @@ void main()
 
     for(int i = 0; i < 8; ++i)
     {
+		uint start = pos;
+		
         for(int j = 0; j < 4; ++j)
         {
             if(id > verticesPerCell[pos])
@@ -69,9 +71,10 @@ void main()
                 break;
             }
         }
+		uint difference = pos - start;
         pos -= temp;
         pos -= layerSize;
-        pos += temp * (layerSize / 4);
+        pos += difference * (layerSize / 4);
         layerSize *= 4;
     }
 
@@ -98,13 +101,17 @@ void main()
 		int(distances[indices[1]] < 0) << 1 |
 		int(distances[indices[0]] < 0) << 0;
 
+	float fx = pos % xMax;
+	float fy = (pos / xMax) % yMax;
+	float fz = pos / (xMax * yMax);
+
 	float offset = 0.1;
-	float fx = (pos % xMax) * offset;
-	float fy = ((pos / xMax) % yMax) * offset;
-	float fz = (pos / (xMax * yMax)) * offset;
+	fx*=offset;
+	fy*=offset;
+	fz*=offset;
 	
 	vec3 positions[8];
-	int edgeIndex = triTable[id + caseCode * 16];
+	int edgeIndex = triTable[caseCode + id * 16];
 	vec3 vertex;
 
 	if (edgeIndex == 0)
