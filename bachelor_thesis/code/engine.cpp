@@ -37,8 +37,8 @@ void run()
 	VoxelData voxelData = {};
 	initialize(&voxelData);
 
-	voxelsToMeshes(&voxelData, &renderData);
-	createPoints(&voxelData, &renderData);
+	//voxelsToMeshes(&voxelData, &renderData);
+	//createPoints(&voxelData, &renderData);
 
 	double timestep = 1.0 / 120.0;
 	double lastTime = glfwGetTime();

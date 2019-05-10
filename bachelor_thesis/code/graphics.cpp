@@ -9,8 +9,8 @@ void initializeMarchingCubes(RenderData* data);
 
 void initalize(RenderData* data)
 {
-	data->primaryShader = createShader("resources/shaders/primary_shader.vs", "resources/shaders/primary_shader.fs");
-	data->pointShader = createShader("resources/shaders/point_shader.vs", "resources/shaders/point_shader.fs");
+	//data->primaryShader = createShader("resources/shaders/primary_shader.vs", "resources/shaders/primary_shader.fs");
+	//data->pointShader = createShader("resources/shaders/point_shader.vs", "resources/shaders/point_shader.fs");
 	data->view = glm::lookAt(glm::vec3(0,0,1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	data->projection = glm::perspective(glm::radians(90.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
 
@@ -21,14 +21,17 @@ void initalize(RenderData* data)
 
 	initializeMarchingCubes(data);
 	data->marchingCubes.tempDistances = new int[65 * 65 * 65];
+
+	glGenVertexArrays(1, &data->marchingCubes.vao);
+	glBindVertexArray(data->marchingCubes.vao);
 }
 
 void render(const RenderData* data)
 {
-	glUseProgram(data->primaryShader);
-	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
-	glBindVertexArray(data->marchingCubes.vao);
-	glDrawArrays(GL_TRIANGLES, 0, data->marchingCubes.numTriangles * 3);
+	//glUseProgram(data->primaryShader);
+	//glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
+	//glBindVertexArray(data->marchingCubes.vao);
+	//glDrawArrays(GL_TRIANGLES, 0, data->marchingCubes.numTriangles * 3);
 	
 	//glUseProgram(data->pointShader);
 	//uniform(data->pointShader, "model", glm::mat4(1.f));
@@ -45,8 +48,9 @@ void render(const RenderData* data)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, data->marchingCubes.indirectBuffer);
 	glm::mat4 model(1.f);
-	model[3] = glm::vec4(6.4, 0, 0, 1);
+	//model[3] = glm::vec4(6.4, 0, 0, 1);
 	uniform(data->marchingCubes.marchingCubesShader, "model", model);
+	glBindVertexArray(data->marchingCubes.vao);
 	glDrawArraysIndirect(GL_TRIANGLES, 0);
 }
 
