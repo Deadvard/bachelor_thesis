@@ -21,6 +21,11 @@ layout(std430, binding = 4) buffer histoPyramid
 	int verticesPerCell[];
 };
 
+out vData
+{
+    vec3 worldPosition;
+};
+
 uniform mat4 model;
 
 vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
@@ -176,6 +181,6 @@ void main()
 		positions[7] = vec3(fx, fy + offset, fz + offset);
 		vertex = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
 	}
-
+	worldPosition = (model * vec4(vertex,1.0)).xyz;
 	gl_Position = projection * view * model * vec4(vertex, 1.0);
 }

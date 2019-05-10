@@ -64,6 +64,77 @@ unsigned int createShader(const char* vertexPath, const char* fragmentPath)
 	return shader;
 }
 
+unsigned int createShader(const char* vertexPath, const char* geometryPath, const char* fragmentPath)
+{
+	// 1. retrieve the vertex/fragment source code from filePath
+	std::string vertexCode;
+	std::string geometryCode;
+	std::string fragmentCode;
+	std::ifstream vShaderFile;
+	std::ifstream gShaderFile;
+	std::ifstream fShaderFile;
+
+	// open files
+	vShaderFile.open(vertexPath);
+	gShaderFile.open(geometryPath);
+	fShaderFile.open(fragmentPath);
+	std::stringstream vShaderStream;
+	std::stringstream gShaderStream;
+	std::stringstream fShaderStream;
+
+	// read file's buffer contents into streams
+	vShaderStream << vShaderFile.rdbuf();
+	gShaderStream << gShaderFile.rdbuf();
+	fShaderStream << fShaderFile.rdbuf();
+
+	// close file handlers
+	vShaderFile.close();
+	gShaderFile.close();
+	fShaderFile.close();
+
+	// convert stream into string
+	vertexCode = vShaderStream.str();
+	geometryCode = gShaderStream.str();
+	fragmentCode = fShaderStream.str();
+
+	const char* vShaderCode = vertexCode.c_str();
+	const char* gShaderCode = geometryCode.c_str();
+	const char* fShaderCode = fragmentCode.c_str();
+
+	// vertex shader
+	unsigned int vertex = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertex, 1, &vShaderCode, NULL);
+	glCompileShader(vertex);
+	checkCompileErrors(vertex, "VERTEX");
+
+	// geometry shader
+	unsigned int geometry = glCreateShader(GL_GEOMETRY_SHADER);
+	glShaderSource(geometry, 1, &gShaderCode, NULL);
+	glCompileShader(geometry);
+	checkCompileErrors(geometry, "GEOMETRY");
+
+	// fragment Shader
+	unsigned int fragment = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragment, 1, &fShaderCode, NULL);
+	glCompileShader(fragment);
+	checkCompileErrors(fragment, "FRAGMENT");
+
+	// shader Program
+	unsigned int shader = glCreateProgram();
+	glAttachShader(shader, vertex);
+	glAttachShader(shader, geometry);
+	glAttachShader(shader, fragment);
+	glLinkProgram(shader);
+	checkCompileErrors(shader, "PROGRAM");
+
+	// delete the shaders as they're linked into our program now and no longer necessary
+	glDeleteShader(vertex);
+	glDeleteShader(geometry);
+	glDeleteShader(fragment);
+
+	return shader;
+}
+
 unsigned int createShader(const char* computePath)
 {
 	// 1. retrieve the vertex/fragment source code from filePath
