@@ -87,7 +87,10 @@ void run()
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && !down)
 			{
 				down = true;
-				sphere(&voxelData, glm::vec3(renderData.view[3]), 0.5f);
+				AABB box;
+				box.position = camera.position;
+				box.size = glm::vec3(0.5f);
+				aabb(&voxelData, box);
 			}
 			else
 			{
