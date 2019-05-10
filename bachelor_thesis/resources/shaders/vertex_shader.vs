@@ -24,27 +24,19 @@ layout(std430, binding = 4) buffer histoPyramid
 uniform mat4 model;
 
 vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
-{
-	float f1 = float(v1) / 1000.0;
-	float f2 = float(v2) / 1000.0;
+{	
+	if (v1 == 0) return p1;	
+	if (v2 == 0) return p2;	
+	if (v1 - v2 == 0) return p1;
 
+	float f1 = float(v1) / 1000.0f;
+	float f2 = float(v2) / 1000.0f;
+		
+	float mu = -f1 / (f2 - f1);
 	vec3 p;
-	float isolevel = 0.0;
-	
-	if (abs(isolevel - f1) < 0.00001f)
-		return p1;
-	
-	if (abs(isolevel - f2) < 0.00001f)
-		return p2;
-	
-	if (abs(f1 - f2) < 0.00001f)
-		return p1;
-	
-	float mu = (isolevel - f1) / (f2 - f1);
-
-	p.x = p1.x + float(mu) * (p2.x - p1.x);
-	p.y = p1.y + float(mu) * (p2.y - p1.y);
-	p.z = p1.z + float(mu) * (p2.z - p1.z);
+	p.x = p1.x + mu * (p2.x - p1.x);
+	p.y = p1.y + mu * (p2.y - p1.y);
+	p.z = p1.z + mu * (p2.z - p1.z);
 	return p;
 }
 
@@ -185,5 +177,5 @@ void main()
 		vertex = interpolation(positions[3], positions[7], distances[indices[3]], distances[indices[7]]);
 	}
 
-	gl_Position = projection * view * vec4(vertex, 1.0);
+	gl_Position = projection * view * model * vec4(vertex, 1.0);
 }
