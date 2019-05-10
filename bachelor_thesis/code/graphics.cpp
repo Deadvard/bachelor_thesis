@@ -25,7 +25,7 @@ void initalize(RenderData* data)
 	glGenVertexArrays(1, &data->marchingCubes.vao);
 }
 
-void render(const RenderData* data)
+void render(const RenderData* data, const glm::vec3* camPos)
 {
 	//glUseProgram(data->primaryShader);
 	//glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
@@ -49,6 +49,7 @@ void render(const RenderData* data)
 	glm::mat4 model(1.f);
 	//model[3] = glm::vec4(6.4, 0, 0, 1);
 	uniform(data->marchingCubes.marchingCubesShader, "model", model);
+	uniform(data->marchingCubes.marchingCubesShader, "camPos", camPos);
 	glBindVertexArray(data->marchingCubes.vao);
 	glDrawArraysIndirect(GL_TRIANGLES, 0);
 }

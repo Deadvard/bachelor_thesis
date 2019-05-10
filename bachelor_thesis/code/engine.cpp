@@ -106,7 +106,7 @@ void run()
 		
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		render(&renderData);
+		render(&renderData, &camera.position);
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
