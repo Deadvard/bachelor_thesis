@@ -23,7 +23,6 @@ void initalize(RenderData* data)
 	data->marchingCubes.tempDistances = new int[65 * 65 * 65];
 
 	glGenVertexArrays(1, &data->marchingCubes.vao);
-	glBindVertexArray(data->marchingCubes.vao);
 }
 
 void render(const RenderData* data)
