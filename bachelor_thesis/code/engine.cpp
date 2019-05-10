@@ -83,6 +83,17 @@ void run()
 				camera.cursor.x = 0.0;
 				camera.cursor.y = 0.0;
 			}
+			static bool down = false;
+			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && !down)
+			{
+				down = true;
+				sphere(&voxelData, glm::vec3(renderData.view[3]), 0.5f);
+			}
+			else
+			{
+				down = false;
+			}
+				
 
 			renderData.view = cameraView(&camera);
 			deltaTime -= timestep;
