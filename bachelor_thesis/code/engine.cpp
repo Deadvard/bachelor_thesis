@@ -83,18 +83,19 @@ void run()
 				camera.cursor.x = 0.0;
 				camera.cursor.y = 0.0;
 			}
-			static bool down = false;
-			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && !down)
+
+			static bool buttondown = false;
+			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && !buttondown)
 			{
-				down = true;
+				buttondown = true;
 				AABB box;
-				box.position = camera.position;
+				box.position = camera.position - forward;
 				box.size = glm::vec3(0.5f);
 				aabb(&voxelData, box);
 			}
-			else
+			else if (!glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
 			{
-				down = false;
+				buttondown = false;
 			}
 				
 
