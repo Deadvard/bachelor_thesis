@@ -51,27 +51,29 @@ vec3 interpolation(vec3 p1, vec3 p2, int v1, int v2)
 void main()
 {
 	uint id = gl_VertexID;
-    uint pos = 1;
-    uint layerSize = 4;
+    int pos = 0;
+    int layerSize = 4;
 
-	for(uint offset = 349520; offset > 0;)
+	for(int offset = 349520; offset >= 0; offset -= layerSize)
 	{			
+		pos *= 4;
+		
 		for(int i = 0; i < 4; ++i)
 		{
 			int cellId = verticesPerCell[pos + offset + i];
-			if (id > cellId)
+			if (id >= cellId)
 			{
 				id -= cellId;
 			}
 			else
 			{
-				pos *= (i + 1);
+				pos += i;
 				break;
 			}
 			
 		}
-		layerSize *= 4;	
-		offset -= layerSize;
+		
+		layerSize *= 4;			
 	}
 
 	int xMax = 65;
@@ -107,7 +109,7 @@ void main()
 	fz*=offset;
 	
 	vec3 positions[8];
-	int edgeIndex = triTable[caseCode + id * 16];
+	int edgeIndex = triTable[id + caseCode * 16];
 	vec3 vertex;
 
 	if (edgeIndex == 0)
