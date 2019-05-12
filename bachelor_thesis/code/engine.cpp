@@ -84,20 +84,13 @@ void run()
 				camera.cursor.y = 0.0;
 			}
 
-			static bool buttondown = false;
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
 			{
-				buttondown = true;
 				AABB box;
 				box.position = camera.position - forward;
 				box.size = glm::vec3(0.5f);
 				aabb(&voxelData, box);
 			}
-			else if (!glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
-			{
-				buttondown = false;
-			}
-				
 
 			renderData.view = cameraView(&camera);
 			deltaTime -= timestep;
