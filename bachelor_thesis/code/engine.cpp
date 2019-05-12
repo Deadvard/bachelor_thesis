@@ -85,7 +85,7 @@ void run()
 			}
 
 			static bool buttondown = false;
-			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && !buttondown)
+			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
 			{
 				buttondown = true;
 				AABB box;

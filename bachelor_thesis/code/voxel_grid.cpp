@@ -16,6 +16,19 @@ void initialize(VoxelData* data)
 
 void sphere(VoxelData* data, glm::vec3 position, float radius)
 {
+	/*glm::ivec3 first = 10.0f * (position - radius);
+	glm::ivec3 last = 10.0f * (position + radius);
+	glm::ivec3 size = data->distancesSize;
+
+	first = glm::max(first, glm::ivec3(0));
+	last = glm::min(last, size);
+
+	for (int z = first.z; z < last.z; ++z)
+	for (int y = first.y; y < last.y; ++y)
+	for (int x = first.x; x < last.x; ++x)
+	{
+		int i = x + size.x * y + size.x * size.y * z;*/
+		
 	glm::ivec3 size = data->distancesSize;
 	for (int i = 0; i < size.x * size.y * size.z; ++i)
 	{
@@ -40,12 +53,18 @@ void sphere(VoxelData* data, glm::vec3 position, float radius)
 
 void aabb(VoxelData* data, const AABB& aabb)
 {
+	glm::ivec3 first = 10.0f * (aabb.position - aabb.size);
+	glm::ivec3 last = 10.0f * (aabb.position + aabb.size);
 	glm::ivec3 size = data->distancesSize;
-	for (int i = 0; i < size.x * size.y * size.z; ++i)
+
+	first = glm::max(first, glm::ivec3(0));
+	last = glm::min(last, size);
+
+	for (int z = first.z; z < last.z; ++z)
+	for (int y = first.y; y < last.y; ++y)
+	for (int x = first.x; x < last.x; ++x)
 	{
-		int x = i % size.x;
-		int y = (i / size.x) % size.y;
-		int z = i / (size.x * size.y);
+		int i = x + size.x * y + size.x * size.y * z;
 
 		float fx = (float)x * data->offset;
 		float fy = (float)y * data->offset;
