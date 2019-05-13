@@ -123,7 +123,7 @@ void update(RenderData* data, VoxelData* voxelData)
 
 void initializeMarchingCubes(RenderData * data)
 {
-	data->marchingCubes.marchingCubesShader = createShader("resources/shaders/vertex_shader.vs", "resources/shaders/geometry_shader.gs", "resources/shaders/fragment_shader.fs");
+	data->marchingCubes.marchingCubesShader = createShader("resources/shaders/char_vertex.vs", "resources/shaders/geometry_shader.gs", "resources/shaders/fragment_shader.fs");
 	data->marchingCubes.computeShader = createShader("resources/shaders/char_unpack.comp");
 	data->marchingCubes.histoPyramidShader = createShader("resources/shaders/histopyramid_builder.comp");
 
