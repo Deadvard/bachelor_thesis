@@ -36,7 +36,8 @@
     <ClInclude Include="code\voxel_grid.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\compute_shader.comp" />
+    <None Include="resources\shaders\char_unpack.comp" />
+    <None Include="resources\shaders\int_unpack.comp" />
     <None Include="resources\shaders\fragment_shader.fs" />
     <None Include="resources\shaders\geometry_shader.gs" />
     <None Include="resources\shaders\point_shader.fs" />

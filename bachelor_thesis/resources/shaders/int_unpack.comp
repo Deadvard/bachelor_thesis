@@ -1,0 +1,38 @@
+#version 430
+
+layout (local_size_x = 1) in;
+
+layout(std430, binding = 2) buffer vertTable
+{
+	int vertCountTable[];
+};
+
+layout(std430, binding = 3) buffer inBuffer
+{
+	int distances[]; // 65 * 65 * 65
+};
+
+layout(std430, binding = 4) buffer histoPyramid
+{
+	int verticesPerCell[];
+};
+
+void main()
+{
+	int xMax = 65;
+	int yMax = 65;
+
+	uint id = gl_GlobalInvocationID.x + (64 * gl_GlobalInvocationID.y) + (64 * 64 * gl_GlobalInvocationID.z);
+
+	uint caseCode =
+		int(distances[0 + id                     ] < 0) << 0 |
+		int(distances[1 + id                     ] < 0) << 1 |
+		int(distances[1 + id + xMax * yMax       ] < 0) << 2 |
+		int(distances[0 + id + xMax * yMax       ] < 0) << 3 |
+		int(distances[0 + id + xMax              ] < 0) << 4 |
+		int(distances[1 + id + xMax              ] < 0) << 5 |
+		int(distances[1 + id + xMax + xMax * yMax] < 0) << 6 |
+		int(distances[0 + id + xMax + xMax * yMax] < 0) << 7;
+		
+	verticesPerCell[id] = vertCountTable[caseCode];
+}

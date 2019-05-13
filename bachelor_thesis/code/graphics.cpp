@@ -124,7 +124,7 @@ void update(RenderData* data, VoxelData* voxelData)
 void initializeMarchingCubes(RenderData * data)
 {
 	data->marchingCubes.marchingCubesShader = createShader("resources/shaders/vertex_shader.vs", "resources/shaders/geometry_shader.gs", "resources/shaders/fragment_shader.fs");
-	data->marchingCubes.computeShader = createShader("resources/shaders/compute_shader.comp");
+	data->marchingCubes.computeShader = createShader("resources/shaders/int_unpack.comp");
 	data->marchingCubes.histoPyramidShader = createShader("resources/shaders/histopyramid_builder.comp");
 
 	glGenBuffers(1, &data->marchingCubes.triTableBuffer);
