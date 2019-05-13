@@ -67,7 +67,7 @@ void update(RenderData* data, VoxelData* voxelData)
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.vertTableBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(int) * 65 * 65 * 65, &data->marchingCubes.tempDistances[0]);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLbyte) * 65 * 65 * 65, &voxelData->isosurface.distances[0]);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glDispatchCompute(64,64,64);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -124,7 +124,7 @@ void update(RenderData* data, VoxelData* voxelData)
 void initializeMarchingCubes(RenderData * data)
 {
 	data->marchingCubes.marchingCubesShader = createShader("resources/shaders/vertex_shader.vs", "resources/shaders/geometry_shader.gs", "resources/shaders/fragment_shader.fs");
-	data->marchingCubes.computeShader = createShader("resources/shaders/int_unpack.comp");
+	data->marchingCubes.computeShader = createShader("resources/shaders/char_unpack.comp");
 	data->marchingCubes.histoPyramidShader = createShader("resources/shaders/histopyramid_builder.comp");
 
 	glGenBuffers(1, &data->marchingCubes.triTableBuffer);
@@ -139,7 +139,7 @@ void initializeMarchingCubes(RenderData * data)
 
 	glGenBuffers(1, &data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(int) * 65 * 65 * 65, nullptr, GL_DYNAMIC_COPY);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLbyte) * 65 * 65 * 65, nullptr, GL_DYNAMIC_COPY);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, data->marchingCubes.inputBuffer);
 
 	int bufferSize = 64 * 64 * 64;
