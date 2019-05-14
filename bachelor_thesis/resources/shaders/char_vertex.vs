@@ -76,15 +76,40 @@ void main()
 	int xMax = 65;
 	int yMax = 65;
 
+	int bytes[4];
+	bytes[0] = 255;
+	bytes[1] = 65280;
+	bytes[2] = 16711680;
+	bytes[3] = 4278190080;
+
+	uint indices[8];
+	indices[0] = 0 + pos;
+	indices[1] = 1 + pos;
+	indices[2] = 1 + pos + xMax * yMax;       
+	indices[3] = 0 + pos + xMax * yMax;       
+	indices[4] = 0 + pos + xMax;             
+	indices[5] = 1 + pos + xMax;              
+	indices[6] = 1 + pos + xMax + xMax * yMax;
+	indices[7] = 0 + pos + xMax + xMax * yMax;
+
 	int dist[8];
-	dist[0] = bitfieldExtract(distances[0], 0 + pos, 8);                      
-	dist[1] = bitfieldExtract(distances[0], 1 + pos, 8);                      
-	dist[2] = bitfieldExtract(distances[0], 1 + pos + xMax * yMax, 8);        
-	dist[3] = bitfieldExtract(distances[0], 0 + pos + xMax * yMax, 8);        
-	dist[4] = bitfieldExtract(distances[0], 0 + pos + xMax, 8);               
-	dist[5] = bitfieldExtract(distances[0], 1 + pos + xMax, 8);               
-	dist[6] = bitfieldExtract(distances[0], 1 + pos + xMax + xMax * yMax, 8); 
-	dist[7] = bitfieldExtract(distances[0], 0 + pos + xMax + xMax * yMax, 8);
+	dist[0] = (distances[indices[0] / 4] & bytes[indices[0] % 4]) >> indices[0] % 4;
+	dist[1] = (distances[indices[1] / 4] & bytes[indices[1] % 4]) >> indices[1] % 4; 
+	dist[2] = (distances[indices[2] / 4] & bytes[indices[2] % 4]) >> indices[2] % 4;
+	dist[3] = (distances[indices[3] / 4] & bytes[indices[3] % 4]) >> indices[3] % 4;
+	dist[4] = (distances[indices[4] / 4] & bytes[indices[4] % 4]) >> indices[4] % 4;
+	dist[5] = (distances[indices[5] / 4] & bytes[indices[5] % 4]) >> indices[5] % 4;
+	dist[6] = (distances[indices[6] / 4] & bytes[indices[6] % 4]) >> indices[6] % 4;
+	dist[7] = (distances[indices[7] / 4] & bytes[indices[7] % 4]) >> indices[7] % 4;
+	
+	if(bool(dist[0] & 80)) dist[0] = -dist[0] ^ 80;
+	if(bool(dist[1] & 80)) dist[1] = -dist[1] ^ 80;
+	if(bool(dist[2] & 80)) dist[2] = -dist[2] ^ 80;
+	if(bool(dist[3] & 80)) dist[3] = -dist[3] ^ 80;
+	if(bool(dist[4] & 80)) dist[4] = -dist[4] ^ 80;
+	if(bool(dist[5] & 80)) dist[5] = -dist[5] ^ 80;
+	if(bool(dist[6] & 80)) dist[6] = -dist[6] ^ 80;
+	if(bool(dist[7] & 80)) dist[7] = -dist[7] ^ 80;
 
 	uint caseCode =
 		int(dist[7] < 0) << 7 |
