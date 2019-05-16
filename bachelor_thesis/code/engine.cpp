@@ -40,7 +40,7 @@ void run()
 	//voxelsToMeshes(&voxelData, &renderData);
 	//createPoints(&voxelData, &renderData);
 
-	double timestep = 1.0 / 120.0;
+	double timestep = 1.0 / 30.0;
 	double lastTime = glfwGetTime();
 	double deltaTime = 0.0;
 

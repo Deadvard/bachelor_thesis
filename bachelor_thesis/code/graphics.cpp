@@ -56,8 +56,8 @@ void render(const RenderData* data, const glm::vec3* camPos)
 
 void update(RenderData* data, VoxelData* voxelData)
 {
-	for(int i = 0; i < 65 * 65 * 65; ++i)
-		data->marchingCubes.tempDistances[i] = int(voxelData->isosurface.distances[i]);
+	/*for(int i = 0; i < 65 * 65 * 65; ++i)
+		data->marchingCubes.tempDistances[i] = int(voxelData->isosurface.distances[i]);*/
 
 	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(data->view));
