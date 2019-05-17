@@ -22,7 +22,7 @@ void main()
 	int xMax = 65;
 	int yMax = 65;
 
-	int pos = int(gl_GlobalInvocationID.x + (64 * gl_GlobalInvocationID.y) + (64 * 64 * gl_GlobalInvocationID.z));
+	int pos = int(gl_GlobalInvocationID.x + (xMax * gl_GlobalInvocationID.y) + (xMax * yMax * gl_GlobalInvocationID.z));
 
 	uint indices[8];
 	indices[0] = 0 + pos;

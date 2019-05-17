@@ -2,6 +2,14 @@
 
 #define FLT_EPSILON 1.192092896e-07F
 
+glm::vec3 searchInPosition(glm::vec3 from, glm::vec3 to)
+{
+	glm::vec3 minP = glm::min(from, to);
+	glm::vec3 maxP = glm::max(from, to);
+	
+	return to;
+}
+
 float sqDistPointSegment(glm::vec3 a, glm::vec3 b, glm::vec3 c)
 {
 	glm::vec3 ab = b - a;

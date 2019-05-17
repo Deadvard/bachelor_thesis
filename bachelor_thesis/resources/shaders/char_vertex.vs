@@ -86,6 +86,7 @@ void main()
 	indices[6] = 1 + pos + xMax + xMax * yMax;
 	indices[7] = 0 + pos + xMax + xMax * yMax;
 
+
 	int dist[8];
 	dist[0] = (distances[indices[0] / 4] >> ((indices[0] % 4) * 8)) & 255;
 	dist[1] = (distances[indices[1] / 4] >> ((indices[1] % 4) * 8)) & 255; 

@@ -61,11 +61,30 @@ void run()
 			glm::vec3 forward = glm::vec3(mat[0][2], mat[1][2], mat[2][2]);
 			glm::vec3 right = glm::vec3(mat[0][0], mat[1][0], mat[2][0]);	
 			
+			glm::vec3 oldPos = camera.position;
+
 			float speed = 10.0f * (float)timestep;
 			if (glfwGetKey(window, GLFW_KEY_W)) camera.position -= speed * forward;
 			if (glfwGetKey(window, GLFW_KEY_A)) camera.position -= speed * right;
 			if (glfwGetKey(window, GLFW_KEY_S)) camera.position += speed * forward;
 			if (glfwGetKey(window, GLFW_KEY_D)) camera.position += speed * right;
+			
+			glm::ivec3 size = voxelData.distancesSize;
+			glm::ivec3 iPos = camera.position;
+			
+			/*for (int i = 0; i < 4; ++i)
+			{
+				char dist = voxelData.isosurface[i].distances
+					[iPos.x + size.x * iPos.y + size.x * size.y * iPos.z];
+				
+				if (dist >= 0)
+				{
+					camera.position = oldPos;
+					break;
+				}
+			}*/
+			
+			
 			
 			if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
 			{
@@ -93,24 +112,24 @@ void run()
 				glm::vec3 min = box.position - box.size;
 				glm::vec3 max = box.position + box.size;
 
-				if (min.x <= 6.4f && min.z <= 6.4f)
+				if (min.x <= 6.5f && min.z <= 6.5f)
 				{
 					aabb(&voxelData, box, 0);
 				}
-				if (max.x >= 6.4f && min.z <= 6.4f) 
+				if (max.x >= 6.5f && min.z <= 6.5f) 
 				{
-					box.position.x -= 6.4f;
+					box.position.x -= 6.5f;
 					aabb(&voxelData, box, 1);
 				}
-				if (min.x <= 6.4f && max.z >= 6.4f)
+				if (min.x <= 6.5f && max.z >= 6.5f)
 				{
-					box.position.z -= 6.4f;
+					box.position.z -= 6.5f;
 					aabb(&voxelData, box, 2);
 				}
-				if (max.x >= 6.4f && max.z >= 6.4f)
+				if (max.x >= 6.5f && max.z >= 6.5f)
 				{
-					box.position.x -= 6.4f;
-					box.position.z -= 6.4f;
+					box.position.x -= 6.5f;
+					box.position.z -= 6.5f;
 					aabb(&voxelData, box, 3);
 				}
 			}
