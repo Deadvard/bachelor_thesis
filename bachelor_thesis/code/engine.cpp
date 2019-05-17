@@ -90,24 +90,27 @@ void run()
 				box.position = camera.position - forward;
 				box.size = glm::vec3(0.5f);
 
-				if (box.position.x <= 6.5f && box.position.z <= 6.5f)
+				glm::vec3 min = box.position - box.size;
+				glm::vec3 max = box.position + box.size;
+
+				if (min.x <= 6.4f && min.z <= 6.4f)
 				{
 					aabb(&voxelData, box, 0);
 				}
-				else if (box.position.x > 6.5f && box.position.z <= 6.5f) 
+				if (max.x >= 6.4f && min.z <= 6.4f) 
 				{
-					box.position.x -= 6.5f;
+					box.position.x -= 6.4f;
 					aabb(&voxelData, box, 1);
 				}
-				else if (box.position.x <= 6.5f && box.position.z > 6.5f)
+				if (min.x <= 6.4f && max.z >= 6.4f)
 				{
-					box.position.z -= 6.5f;
+					box.position.z -= 6.4f;
 					aabb(&voxelData, box, 2);
 				}
-				else if (box.position.x > 6.5f && box.position.z > 6.5f)
+				if (max.x >= 6.4f && max.z >= 6.4f)
 				{
-					box.position.x -= 6.5f;
-					box.position.z -= 6.5f;
+					box.position.x -= 6.4f;
+					box.position.z -= 6.4f;
 					aabb(&voxelData, box, 3);
 				}
 			}
@@ -122,13 +125,13 @@ void run()
 		glm::mat4 model(1.0f);
 		render(&renderData, &voxelData, &camera.position, &model, 0);
 		
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(6.5f, 0.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(6.4f, 0.0f, 0.0f));
 		render(&renderData, &voxelData, &camera.position, &model, 1);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 6.5f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 6.4f));
 		render(&renderData, &voxelData, &camera.position, &model, 2);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(6.5f, 0.0f, 6.5f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(6.4f, 0.0f, 6.4f));
 		render(&renderData, &voxelData, &camera.position, &model, 3);
 		
 		glfwSwapBuffers(window);
