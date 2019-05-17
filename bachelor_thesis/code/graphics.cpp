@@ -25,8 +25,72 @@ void initalize(RenderData* data)
 	glGenVertexArrays(1, &data->marchingCubes.vao);
 }
 
-void render(const RenderData* data, const glm::vec3* camPos)
+void render(RenderData* data, VoxelData* voxelData, glm::vec3* camPos, glm::mat4* model, int id)
 {
+	/*for(int i = 0; i < 65 * 65 * 65; ++i)
+		data->marchingCubes.tempDistances[i] = int(voxelData->isosurface.distances[i]);*/
+
+	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(data->view));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(data->projection));
+
+	glUseProgram(data->marchingCubes.computeShader);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.vertTableBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLbyte) * 65 * 65 * 65, voxelData->isosurface[id].distances);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
+	glDispatchCompute(64, 64, 64);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glUseProgram(data->marchingCubes.histoPyramidShader);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.indirectBuffer);
+	int offset = 0;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(64, 64, 16);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	offset += 64 * 64 * 64;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(64, 16, 16);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	offset += 64 * 64 * 16;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(16, 16, 16);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	offset += 64 * 16 * 16;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(16, 16, 4);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	offset += 16 * 16 * 16;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(16, 4, 4);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	offset += 16 * 16 * 4;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(4, 4, 4);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	offset += 16 * 4 * 4;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(4, 4, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	offset += 4 * 4 * 4;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(4, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	offset += 4 * 4 * 1;
+	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
+	glDispatchCompute(1, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT);
+	
 	//glUseProgram(data->primaryShader);
 	//glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
 	//glBindVertexArray(data->marchingCubes.vao);
@@ -46,79 +110,11 @@ void render(const RenderData* data, const glm::vec3* camPos)
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER, data->marchingCubes.indirectBuffer);
-	glm::mat4 model(1.f);
-	//model[3] = glm::vec4(6.4, 0, 0, 1);
-	uniform(data->marchingCubes.marchingCubesShader, "model", model);
+
+	uniform(data->marchingCubes.marchingCubesShader, "model", *model);
 	uniform(data->marchingCubes.marchingCubesShader, "camPos", camPos);
 	glBindVertexArray(data->marchingCubes.vao);
 	glDrawArraysIndirect(GL_TRIANGLES, 0);
-}
-
-void update(RenderData* data, VoxelData* voxelData)
-{
-	/*for(int i = 0; i < 65 * 65 * 65; ++i)
-		data->marchingCubes.tempDistances[i] = int(voxelData->isosurface.distances[i]);*/
-
-	glBindBuffer(GL_UNIFORM_BUFFER, data->uniformBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(data->view));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(data->projection));
-
-	glUseProgram(data->marchingCubes.computeShader);
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.vertTableBuffer);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.inputBuffer);
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLbyte) * 65 * 65 * 65, &voxelData->isosurface.distances[0]);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
-	glDispatchCompute(64,64,64);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
-	glUseProgram(data->marchingCubes.histoPyramidShader);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.outputBuffer);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, data->marchingCubes.indirectBuffer);
-	int offset = 0;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(64, 64, 16);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-	offset += 64 * 64 * 64;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(64, 16, 16);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-	offset += 64 * 64 * 16;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(16, 16, 16);	
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
-	offset += 64 * 16 * 16;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(16, 16, 4);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
-	offset += 16 * 16 * 16;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(16, 4, 4);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
-	offset += 16 * 16 * 4;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(4, 4, 4);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
-	offset += 16 * 4 * 4;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(4, 4, 1);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
-	offset += 4 * 4 * 4;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(4, 1, 1);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	
-	offset += 4 * 4 * 1;
-	uniform(data->marchingCubes.histoPyramidShader, "offset", offset);
-	glDispatchCompute(1, 1, 1);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT);
 }
 
 void initializeMarchingCubes(RenderData * data)

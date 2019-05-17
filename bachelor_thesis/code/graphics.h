@@ -46,7 +46,6 @@ struct RenderData
 };
 
 void initalize(RenderData* data);
-void render(const RenderData* data, const glm::vec3* camPos);
-void update(RenderData* data, VoxelData* voxelData);
+void render(RenderData* data, VoxelData* voxelData, glm::vec3* camPos, glm::mat4* model, int id);
 
 #endif

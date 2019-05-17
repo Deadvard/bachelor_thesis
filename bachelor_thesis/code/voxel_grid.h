@@ -12,16 +12,15 @@ struct VoxelData
 {
 	float offset;
 	glm::ivec3 distancesSize;
-	Isosurface isosurface;
+	Isosurface isosurface[4];
 };
 
 void initialize(VoxelData* data);
-void densityFunction(VoxelData* data);
 
 struct AABB { glm::vec3 position; glm::vec3 size; };
 
-void sphere(VoxelData* data, glm::vec3 position, float radius);
-void aabb(VoxelData* data, const AABB& aabb);
+void sphere(VoxelData* data, glm::vec3 position, float radius, int id);
+void aabb(VoxelData* data, const AABB& aabb, int id);
 
 
 glm::vec3 closest_point(const AABB& aabb, const glm::vec3& point);

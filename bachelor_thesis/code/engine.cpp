@@ -89,17 +89,48 @@ void run()
 				AABB box;
 				box.position = camera.position - forward;
 				box.size = glm::vec3(0.5f);
-				aabb(&voxelData, box);
+
+				if (box.position.x <= 6.5f && box.position.z <= 6.5f)
+				{
+					aabb(&voxelData, box, 0);
+				}
+				else if (box.position.x > 6.5f && box.position.z <= 6.5f) 
+				{
+					box.position.x -= 6.5f;
+					aabb(&voxelData, box, 1);
+				}
+				else if (box.position.x <= 6.5f && box.position.z > 6.5f)
+				{
+					box.position.z -= 6.5f;
+					aabb(&voxelData, box, 2);
+				}
+				else if (box.position.x > 6.5f && box.position.z > 6.5f)
+				{
+					box.position.x -= 6.5f;
+					box.position.z -= 6.5f;
+					aabb(&voxelData, box, 3);
+				}
 			}
 
 			renderData.view = cameraView(&camera);
 			deltaTime -= timestep;
-			update(&renderData, &voxelData);
 		}
 		
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		render(&renderData, &camera.position);
+		
+		glm::mat4 model(1.0f);
+		render(&renderData, &voxelData, &camera.position, &model, 0);
+		
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(6.5f, 0.0f, 0.0f));
+		render(&renderData, &voxelData, &camera.position, &model, 1);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 6.5f));
+		render(&renderData, &voxelData, &camera.position, &model, 2);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(6.5f, 0.0f, 6.5f));
+		render(&renderData, &voxelData, &camera.position, &model, 3);
+		
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
@@ -191,7 +222,7 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 	};
 
 	glm::ivec3 size = voxelData->distancesSize;
-	const char* distances = voxelData->isosurface.distances;
+	const char* distances = voxelData->isosurface[0].distances;
 
 	std::vector<PosCol> points;
 	for (int i = 0; i < size.x * size.y * (size.z - 1); ++i)
@@ -230,7 +261,7 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData)
 			points.emplace_back(temp[j]);
 	}
 
-	renderData->marchingCubes.numPoints = points.size();
+	renderData->marchingCubes.numPoints = (unsigned)points.size();
 
 	glGenVertexArrays(1, &renderData->marchingCubes.ptVao);
 	glBindVertexArray(renderData->marchingCubes.ptVao);
@@ -255,7 +286,7 @@ void voxelsToMeshes(const VoxelData* voxelData, RenderData* renderData)
 
 	std::vector<Triangle> triangles;
 	glm::ivec3 size = voxelData->distancesSize;
-	const char* distances = voxelData->isosurface.distances;
+	const char* distances = voxelData->isosurface[0].distances;
 	
 	for (int i = 0; i < size.x * size.y * size.z; ++i)
 	{

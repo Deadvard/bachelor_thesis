@@ -4,17 +4,26 @@ void initialize(VoxelData* data)
 {
 	data->distancesSize = glm::ivec3(65, 65, 65);
 	data->offset = 0.1f;
-	data->isosurface.distances = new char[data->distancesSize.x * data->distancesSize.y * data->distancesSize.z];
-	memset(data->isosurface.distances, 0, data->distancesSize.x * data->distancesSize.y * data->distancesSize.z);
-	sphere(data, glm::vec3(4.0f), 1.0f);
+
+	for (int i = 0; i < 4; ++i)
+	{
+		data->isosurface[i].distances = new char[data->distancesSize.x * data->distancesSize.y * data->distancesSize.z];
+		memset(data->isosurface[i].distances, 0, data->distancesSize.x * data->distancesSize.y * data->distancesSize.z);
+	}
+
+	sphere(data, glm::vec3(4.0f), 1.0f, 0);
 	
+	sphere(data, glm::vec3(4.0f), 1.0f, 1);
+	sphere(data, glm::vec3(4.0f), 1.0f, 2);
+	sphere(data, glm::vec3(4.0f), 1.0f, 3);
+
 	AABB box;
 	box.position = glm::vec3(2.0f);
 	box.size = glm::vec3(0.5f);
-	aabb(data, box);
+	aabb(data, box, 0);
 }
 
-void sphere(VoxelData* data, glm::vec3 position, float radius)
+void sphere(VoxelData* data, glm::vec3 position, float radius, int id)
 {
 	/*glm::ivec3 first = 10.0f * (position - radius);
 	glm::ivec3 last = 10.0f * (position + radius);
@@ -46,12 +55,12 @@ void sphere(VoxelData* data, glm::vec3 position, float radius)
 		if (dist < 100)
 		{
 			if (dist < -100) dist = -100;
-			data->isosurface.distances[i] = (char)dist;
+			data->isosurface[id].distances[i] = (char)dist;
 		}
 	}
 }
 
-void aabb(VoxelData* data, const AABB& aabb)
+void aabb(VoxelData* data, const AABB& aabb, int id)
 {
 	glm::ivec3 first = 10.0f * (aabb.position - aabb.size);
 	glm::ivec3 last = 10.0f * (aabb.position + aabb.size);
@@ -78,7 +87,7 @@ void aabb(VoxelData* data, const AABB& aabb)
 		if (dist < 100)
 		{
 			if (dist < -100) dist = -100;
-			data->isosurface.distances[i] = (char)dist;
+			data->isosurface[id].distances[i] = (char)dist;
 		}
 	}
 }
