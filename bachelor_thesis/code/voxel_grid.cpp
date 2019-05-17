@@ -8,14 +8,14 @@ void initialize(VoxelData* data)
 	for (int i = 0; i < 4; ++i)
 	{
 		data->isosurface[i].distances = new char[data->distancesSize.x * data->distancesSize.y * data->distancesSize.z];
-		memset(data->isosurface[i].distances, 0, data->distancesSize.x * data->distancesSize.y * data->distancesSize.z);
+		memset(data->isosurface[i].distances, -100, data->distancesSize.x * data->distancesSize.y * data->distancesSize.z);
 	}
 
-	sphere(data, glm::vec3(4.0f), 1.0f, 0);
+	/*sphere(data, glm::vec3(4.0f), 1.0f, 0);
 	
 	sphere(data, glm::vec3(4.0f), 1.0f, 1);
 	sphere(data, glm::vec3(4.0f), 1.0f, 2);
-	sphere(data, glm::vec3(4.0f), 1.0f, 3);
+	sphere(data, glm::vec3(4.0f), 1.0f, 3);*/
 
 	AABB box;
 	box.position = glm::vec3(2.0f);
