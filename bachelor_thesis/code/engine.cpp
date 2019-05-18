@@ -3,6 +3,7 @@
 #include <glad.c>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/quaternion.hpp>
+#include <iostream>
 
 #include "graphics.h"
 #include "voxel_grid.h"
@@ -27,6 +28,7 @@ void createPoints(const VoxelData* voxelData, RenderData* renderData);
 void run()
 {
 	GLFWwindow* window = createWindow(1280, 720);
+	glfwSwapInterval(0);
 
 	Camera camera = {};
 	camera.position = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -51,6 +53,8 @@ void run()
 	
 	while (running)
 	{
+		double performanceTimer = glfwGetTime();
+
 		double now = glfwGetTime();
 		deltaTime += now - lastTime;
 		lastTime = now;
@@ -154,6 +158,10 @@ void run()
 		render(&renderData, &voxelData, &camera.position, &model, 3);
 		
 		glfwSwapBuffers(window);
+
+		performanceTimer = glfwGetTime() - performanceTimer;
+
+		std::cout << performanceTimer << '\n';
 
 		glfwPollEvents();
 
