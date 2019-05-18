@@ -50,6 +50,10 @@ void run()
 	glm::dvec2 newMouse = glm::dvec2(0.0, 0.0);
 	
 	bool running = true;
+
+	const int numFrames = 30;
+	double totalFrames[numFrames];
+	int avIndex = 0;
 	
 	while (running)
 	{
@@ -159,9 +163,22 @@ void run()
 		
 		glfwSwapBuffers(window);
 
-		performanceTimer = glfwGetTime() - performanceTimer;
-
-		std::cout << performanceTimer << '\n';
+		if (avIndex < numFrames)
+		{
+			performanceTimer = glfwGetTime() - performanceTimer;
+			totalFrames[avIndex++] = performanceTimer;
+		}
+		else
+		{
+			double average = 0;
+			for (int i = 0; i < numFrames; ++i)
+			{
+				average += totalFrames[i];
+			}
+			average /= numFrames;
+			std::cout << average << '\n';
+			avIndex = 0;
+		}
 
 		glfwPollEvents();
 
